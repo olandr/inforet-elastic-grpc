@@ -1,0 +1,61 @@
+{
+  "name": "ir-project",
+  "version": "1.0.0",
+  "description": "ir project",
+  "scripts": {
+    "start": "ENV=test parcel src/index.html",
+    "build": "parcel build src/index.html && cp _redirects dist/_redirects"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olandr/ir-project.git"
+  },
+  "keywords": [
+    "information",
+    "retrieval",
+    "project",
+    "group"
+  ],
+  "author": "lembeye,nbosch,olandr,sarlinds",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/olandr/ir-project/issues"
+  },
+  "homepage": "https://github.com/olandr/ir-project#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@parcel/optimizer-cssnano": "^2.0.0-nightly.616",
+    "@parcel/optimizer-htmlnano": "^2.0.0-nightly.616",
+    "@parcel/packager-css": "^2.0.0-nightly.616",
+    "@parcel/packager-html": "^2.0.0-nightly.616",
+    "@parcel/transformer-css": "^2.0.0-nightly.616",
+    "@parcel/transformer-html": "^2.0.0-nightly.616",
+    "@parcel/transformer-postcss": "^2.0.0-nightly.616",
+    "@parcel/transformer-posthtml": "^2.0.0-nightly.616",
+    "@parcel/transformer-sass": "^2.0.0-nightly.616",
+    "husky": "^4.3.4",
+    "lint-staged": "^10.5.3",
+    "node-gyp-build": "^4.2.3",
+    "parcel": "^2.0.0-nightly.614",
+    "postcss": "^8.2.6",
+    "prettier": "^2.2.1",
+    "sass": "^1.30.0"
+  },
+  "dependencies": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged --relative"
+    }
+  },
+  "lint-staged": {
+    "*.(css|test|js|scss|jsx)": [
+      "npx prettier --write"
+    ]
+  },
+  "optionalDependencies": {
+    "win-node-env": "^0.4.0"
+  }
+}
