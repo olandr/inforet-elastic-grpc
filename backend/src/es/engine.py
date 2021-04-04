@@ -1,16 +1,46 @@
 import glob
 import csv
-from elasticsearch import helpers, Elasticsearch
+import sys
+from elasticsearch import helpers, Elasticsearch, TransportError
 DATADIR = '../../data/'
+INDEX_NAME = 'goodreads'
 
-es = Elasticsearch(http_compress=True)
-es.indices.create(index='goodreads')
+class Engine():
+  '''
+    Engine will establish an initial connection, process and index the data to ES.
+    This should really only be instantiated once in either of the following two circumstances:
+      * the index is empty and we have some data to index (create). 
+      * the index is deprecated (e.g. new data present, new format present) (re-index)
+  '''
+  
+  def __init__(self, is_indexing = False):
+    print('--INDEXING STARTING (%s)--' % INDEX_NAME, file=sys.stderr)
+    self.es = Elasticsearch()
+    if not self.es.indices.exists(index=INDEX_NAME):
+      self.es.indices.create(index=INDEX_NAME)
+      print('Index does not exists......will index data', file=sys.stderr)
+      self.index()
+    else:
+      print('Index already exists...', file=sys.stderr, end='')
+      if (is_indexing):
+        print('... will delete existing data and re-index data', file=sys.stderr)
+        self.es.indices.delete(index=INDEX_NAME, ignore=[400, 404])
+        self.index()
+      else:
+        print('... will not change anything!', file=sys.stderr)
+    
+    print('--INDEXING DONE--', file=sys.stderr)
+      
 
-for fn in glob.glob(DATADIR + '*.csv'):
-  print(f)
-  with open(f, 'r') as f:
-    data = csc.DictReader(f)
-    helpers.bulk(es, data, index='goodreads', doc_type='type')
+  # index will iterate over the files within the data dir and bulk index them to the index.
+  def index(self):
+    print('Searching within:', DATADIR, file=sys.stderr, end='')
+    for fn in glob.glob(DATADIR + '*.csv'):
+      print('Processing: %s', fn, file=sys.stderr, end='')
+      with open(fn, 'r', encoding='utf-8') as f:
+        data = csv.DictReader(f)
+        helpers.bulk(self.es, data, index=INDEX_NAME)
+      print('...done:', fn, file=sys.stderr)
 
-res = es.get(index='goodreads', id=1)
-print(res)
+  def status(self):
+    return es.info()
