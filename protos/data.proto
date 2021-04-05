@@ -1,3 +1,5 @@
+// .proto def for the querying service.
+
 syntax = "proto3";
 package ir.search;
 

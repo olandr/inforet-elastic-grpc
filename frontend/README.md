@@ -33,7 +33,15 @@ That should be it! Now you have a lot of cool node_modules that will require ext
 
 _You might get an so called "audit" warning, please refer to [Audit](###Audit)_
 
-### Starting
+## Starting
+TODO clean this part up/explain what is happening here.
+### gRPC
+deps: protoc
+
+### Reverse-proxy for gRPC
+deps: go, grpcwebproxy
+
+### Frontend
 Starting a local instance of the GUI is super easy, just run:
 
 ```
@@ -41,7 +49,6 @@ npm start
 ```
 You now have a local server running on some port (default: :1234) and you should be able to open the GUI on "localhost:1234".
 
-## API connection
 TODO
 
 ## Problems and FAQ
