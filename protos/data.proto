@@ -1,0 +1,17 @@
+syntax = "proto3";
+package ir.search;
+
+service IR {
+  rpc QueryES(QueryRequest) returns (stream ResultEntry);
+}
+
+message QueryRequest{
+  int64 id = 1;
+  string query = 2;
+
+}
+
+message ResultEntry {
+  string key = 1;
+  string value = 2;
+}
