@@ -17,12 +17,25 @@ export const search = () => {
     console.log('onHeaders', headers);
   });
   stub.onMessage((message) => {
-    console.log('onMessage', message);
+    let ob = message.toObject();
+    ob.dataMap = dataMapToObject(ob.dataMap);
+    console.log('onMessage', ob);
   });
   stub.onEnd((status, statusMessage, trailers) => {
     console.log('onEnd', status, statusMessage, trailers);
   });
   stub.finishSend();
 };
+
+// dataMapToObject is a help function that marshalls a dataMap (i.e. map<string, string>) to an object instead.
+const dataMapToObject = (dataMap) => {
+  let ret = {};
+  for (let entry of dataMap) {
+    let key = entry[0];
+    let value = entry[1];
+    ret[key] = value;
+  }
+  return ret;
+}
 
 search();
