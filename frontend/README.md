@@ -35,6 +35,10 @@ _You might get an so called "audit" warning, please refer to [Audit](###Audit)_
 
 ## Starting
 TODO clean this part up/explain what is happening here.
+
+### Elastic Search
+deps: elasticsearch connection binary.
+
 ### gRPC
 deps: protoc
 
