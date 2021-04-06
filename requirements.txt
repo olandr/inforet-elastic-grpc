@@ -1,3 +1,6 @@
 certifi==2020.12.5
 elasticsearch==7.12.0
 urllib3==1.26.4
+protobuf==3.15.7
+grpcio==1.36.1
+grpcio-tools==1.36.1

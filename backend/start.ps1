@@ -1,4 +1,5 @@
 #!/bin/ps1
+echo "Starting servers..."
 
 Function clean {
   # FIXME: add exception handling
@@ -64,4 +65,4 @@ while ($true) {
   }
   sleep -s 2
 }
-echo "Done"
+echo "End"
