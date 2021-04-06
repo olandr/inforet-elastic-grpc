@@ -15,8 +15,6 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var google_protobuf_struct_pb = require('google-protobuf/google/protobuf/struct_pb.js');
-goog.object.extend(proto, google_protobuf_struct_pb);
 goog.exportSymbol('proto.ir.search.QueryRequest', null, global);
 goog.exportSymbol('proto.ir.search.ResultEntry', null, global);
 /**
@@ -255,7 +253,7 @@ proto.ir.search.ResultEntry.toObject = function(includeInstance, msg) {
   var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     score: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
-    data: (f = msg.getData()) && google_protobuf_struct_pb.Struct.toObject(includeInstance, f)
+    dataMap: (f = msg.getDataMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
   if (includeInstance) {
@@ -301,9 +299,10 @@ proto.ir.search.ResultEntry.deserializeBinaryFromReader = function(msg, reader) 
       msg.setScore(value);
       break;
     case 3:
-      var value = new google_protobuf_struct_pb.Struct;
-      reader.readMessage(value,google_protobuf_struct_pb.Struct.deserializeBinaryFromReader);
-      msg.setData(value);
+      var value = msg.getDataMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
+         });
       break;
     default:
       reader.skipField();
@@ -348,13 +347,9 @@ proto.ir.search.ResultEntry.serializeBinaryToWriter = function(message, writer) 
       f
     );
   }
-  f = message.getData();
-  if (f != null) {
-    writer.writeMessage(
-      3,
-      f,
-      google_protobuf_struct_pb.Struct.serializeBinaryToWriter
-    );
+  f = message.getDataMap(true);
+  if (f && f.getLength() > 0) {
+    f.serializeBinary(3, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
 };
 
@@ -396,40 +391,25 @@ proto.ir.search.ResultEntry.prototype.setScore = function(value) {
 
 
 /**
- * optional google.protobuf.Struct data = 3;
- * @return {?proto.google.protobuf.Struct}
+ * map<string, string> data = 3;
+ * @param {boolean=} opt_noLazyCreate Do not create the map if
+ * empty, instead returning `undefined`
+ * @return {!jspb.Map<string,string>}
  */
-proto.ir.search.ResultEntry.prototype.getData = function() {
-  return /** @type{?proto.google.protobuf.Struct} */ (
-    jspb.Message.getWrapperField(this, google_protobuf_struct_pb.Struct, 3));
+proto.ir.search.ResultEntry.prototype.getDataMap = function(opt_noLazyCreate) {
+  return /** @type {!jspb.Map<string,string>} */ (
+      jspb.Message.getMapField(this, 3, opt_noLazyCreate,
+      null));
 };
 
 
 /**
- * @param {?proto.google.protobuf.Struct|undefined} value
- * @return {!proto.ir.search.ResultEntry} returns this
-*/
-proto.ir.search.ResultEntry.prototype.setData = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
+ * Clears values from the map. The map will be non-null.
  * @return {!proto.ir.search.ResultEntry} returns this
  */
-proto.ir.search.ResultEntry.prototype.clearData = function() {
-  return this.setData(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.ir.search.ResultEntry.prototype.hasData = function() {
-  return jspb.Message.getField(this, 3) != null;
-};
+proto.ir.search.ResultEntry.prototype.clearDataMap = function() {
+  this.getDataMap().clear();
+  return this;};
 
 
 goog.object.extend(exports, proto.ir.search);

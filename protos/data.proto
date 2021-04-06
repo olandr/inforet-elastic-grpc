@@ -2,7 +2,7 @@
 
 syntax = "proto3";
 package ir.search;
-import "google/protobuf/struct.proto";
+//import "google/protobuf/struct.proto";
 
 service IR {
   rpc QueryES(QueryRequest) returns (stream ResultEntry);
@@ -17,5 +17,5 @@ message QueryRequest{
 message ResultEntry {
   string id = 1;
   double score = 2;
-  google.protobuf.Struct data = 3;
+  map<string, string> data = 3;
 }
