@@ -39,9 +39,10 @@ In an effort to make the booting process as easy as possible we can start the ba
 
 Starting the servers on a Windows machine (assume Powershell 7)
 ```shell
-$ .\start_ps1
+$ cd backend
+$ .\start_ps1     # windows
+$ sh start.sh     # macOS
 ```
-TODO: add macOS script
 TODO: add logging
 
 
