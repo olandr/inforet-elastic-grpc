@@ -1,9 +1,8 @@
 import client
 import engine
-
+import server
 
 if __name__ == "__main__":
     e = engine.Engine()
     c = client.Client()
-    res = c.raw_query(body={"query": {"query_string": {"query": "harry"}}})
-    print(res)
+    s = server.serve_grpc(c)
