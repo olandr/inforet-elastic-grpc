@@ -15,6 +15,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
+var google_protobuf_struct_pb = require('google-protobuf/google/protobuf/struct_pb.js');
+goog.object.extend(proto, google_protobuf_struct_pb);
 goog.exportSymbol('proto.ir.search.QueryRequest', null, global);
 goog.exportSymbol('proto.ir.search.ResultEntry', null, global);
 /**
@@ -251,8 +253,9 @@ proto.ir.search.ResultEntry.prototype.toObject = function(opt_includeInstance) {
  */
 proto.ir.search.ResultEntry.toObject = function(includeInstance, msg) {
   var f, obj = {
-    key: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    value: jspb.Message.getFieldWithDefault(msg, 2, "")
+    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    score: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
+    data: (f = msg.getData()) && google_protobuf_struct_pb.Struct.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -291,11 +294,16 @@ proto.ir.search.ResultEntry.deserializeBinaryFromReader = function(msg, reader) 
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setKey(value);
+      msg.setId(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setValue(value);
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setScore(value);
+      break;
+    case 3:
+      var value = new google_protobuf_struct_pb.Struct;
+      reader.readMessage(value,google_protobuf_struct_pb.Struct.deserializeBinaryFromReader);
+      msg.setData(value);
       break;
     default:
       reader.skipField();
@@ -326,28 +334,36 @@ proto.ir.search.ResultEntry.prototype.serializeBinary = function() {
  */
 proto.ir.search.ResultEntry.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getKey();
+  f = message.getId();
   if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getValue();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getScore();
+  if (f !== 0.0) {
+    writer.writeDouble(
       2,
       f
+    );
+  }
+  f = message.getData();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      google_protobuf_struct_pb.Struct.serializeBinaryToWriter
     );
   }
 };
 
 
 /**
- * optional string key = 1;
+ * optional string id = 1;
  * @return {string}
  */
-proto.ir.search.ResultEntry.prototype.getKey = function() {
+proto.ir.search.ResultEntry.prototype.getId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -356,26 +372,63 @@ proto.ir.search.ResultEntry.prototype.getKey = function() {
  * @param {string} value
  * @return {!proto.ir.search.ResultEntry} returns this
  */
-proto.ir.search.ResultEntry.prototype.setKey = function(value) {
+proto.ir.search.ResultEntry.prototype.setId = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
- * optional string value = 2;
- * @return {string}
+ * optional double score = 2;
+ * @return {number}
  */
-proto.ir.search.ResultEntry.prototype.getValue = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+proto.ir.search.ResultEntry.prototype.getScore = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 2, 0.0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.ir.search.ResultEntry} returns this
  */
-proto.ir.search.ResultEntry.prototype.setValue = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+proto.ir.search.ResultEntry.prototype.setScore = function(value) {
+  return jspb.Message.setProto3FloatField(this, 2, value);
+};
+
+
+/**
+ * optional google.protobuf.Struct data = 3;
+ * @return {?proto.google.protobuf.Struct}
+ */
+proto.ir.search.ResultEntry.prototype.getData = function() {
+  return /** @type{?proto.google.protobuf.Struct} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_struct_pb.Struct, 3));
+};
+
+
+/**
+ * @param {?proto.google.protobuf.Struct|undefined} value
+ * @return {!proto.ir.search.ResultEntry} returns this
+*/
+proto.ir.search.ResultEntry.prototype.setData = function(value) {
+  return jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.ir.search.ResultEntry} returns this
+ */
+proto.ir.search.ResultEntry.prototype.clearData = function() {
+  return this.setData(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ir.search.ResultEntry.prototype.hasData = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 

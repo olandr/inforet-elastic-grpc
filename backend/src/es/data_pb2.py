@@ -11,6 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -19,8 +20,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ndata.proto\x12\tir.search\")\n\x0cQueryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\")\n\x0bResultEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t2B\n\x02IR\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x62\x06proto3'
-)
+  serialized_pb=b'\n\ndata.proto\x12\tir.search\x1a\x1cgoogle/protobuf/struct.proto\")\n\x0cQueryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\"O\n\x0bResultEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12%\n\x04\x64\x61ta\x18\x03 \x01(\x0b\x32\x17.google.protobuf.Struct2B\n\x02IR\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x62\x06proto3'
+  ,
+  dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,])
 
 
 
@@ -59,8 +61,8 @@ _QUERYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=25,
-  serialized_end=66,
+  serialized_start=55,
+  serialized_end=96,
 )
 
 
@@ -73,16 +75,23 @@ _RESULTENTRY = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='ir.search.ResultEntry.key', index=0,
+      name='id', full_name='ir.search.ResultEntry.id', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='value', full_name='ir.search.ResultEntry.value', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='score', full_name='ir.search.ResultEntry.score', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='data', full_name='ir.search.ResultEntry.data', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -98,10 +107,11 @@ _RESULTENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=68,
-  serialized_end=109,
+  serialized_start=98,
+  serialized_end=177,
 )
 
+_RESULTENTRY.fields_by_name['data'].message_type = google_dot_protobuf_dot_struct__pb2._STRUCT
 DESCRIPTOR.message_types_by_name['QueryRequest'] = _QUERYREQUEST
 DESCRIPTOR.message_types_by_name['ResultEntry'] = _RESULTENTRY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -129,8 +139,8 @@ _IR = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=111,
-  serialized_end=177,
+  serialized_start=179,
+  serialized_end=245,
   methods=[
   _descriptor.MethodDescriptor(
     name='QueryES',

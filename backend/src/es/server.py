@@ -1,3 +1,4 @@
+from google.protobuf.struct_pb2 import Struct
 from concurrent import futures
 import grpc
 import data_pb2
@@ -11,12 +12,14 @@ class Server(data_pb2_grpc.IRServicer):
     res = self.es_client.raw_query(body={'query': {'query_string': {'query': request.query}}})
     
     for hit in res['hits']['hits']:
-      data = hit['_source']
-      for k in data:
-          yield data_pb2.ResultEntry(
-          key=k,
-          value=data[k]
-        )
+      print(hit)
+      data = Struct()
+      data.update(hit['_source'])
+      yield data_pb2.ResultEntry(
+        id=hit['_id'],
+        score=hit['_score'],
+        data=data
+      )
 
 def serve_grpc(esc):
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
