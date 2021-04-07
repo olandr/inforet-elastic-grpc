@@ -30,7 +30,7 @@ es_server=$!
 
 # Check the health of the ES-server by performing iwr (curl) requests to the localhost. Using linear backoff.
 code=""
-curl -X GET "http://localhost:9200/_cat/health?v=true&pretty" --retry 2 --retry-delay 5 --retry-connrefused --connect-timeout 5
+curl -X GET "http://localhost:9200/_cat/health?v=true&pretty" --retry 5 --retry-delay 5 --retry-connrefused --connect-timeout 5
 code=$?
 
 if [ $code -ne 0 ]
