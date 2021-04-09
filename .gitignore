@@ -2,6 +2,7 @@
 __pycache__/
 /elasticsearch*
 .parcel-cache
+*.d.ts
 
 # Logs
 logs

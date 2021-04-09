@@ -1,0 +1,21 @@
+// .proto def for the querying service.
+
+syntax = "proto3";
+package ir.search;
+//import "google/protobuf/struct.proto";
+
+service IR {
+  rpc QueryES(QueryRequest) returns (stream ResultEntry);
+}
+
+message QueryRequest{
+  int64 id = 1;
+  string query = 2;
+
+}
+
+message ResultEntry {
+  string id = 1;
+  double score = 2;
+  map<string, string> data = 3;
+}
