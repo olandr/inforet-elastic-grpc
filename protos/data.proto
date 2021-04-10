@@ -6,6 +6,8 @@ package ir.search;
 
 service IR {
   rpc QueryES(QueryRequest) returns (stream ResultEntry);
+  rpc SignupUser(UserData) returns (UserId);
+  rpc UserInfo(UserId) returns (UserData);
 }
 
 message QueryRequest{
@@ -18,4 +20,19 @@ message ResultEntry {
   string id = 1;
   double score = 2;
   map<string, string> data = 3;
+}
+
+message UserData {
+  int64 UserId = 1;
+  string name = 2;
+  map<string, string> languages = 3;
+  map<string, string> topics = 4;
+  map<string, string> authors = 5;
+  int64 nationality = 6;
+  string sex = 7;
+  int64 age = 8;
+}
+
+message UserId {
+  int64 id = 1;
 }
