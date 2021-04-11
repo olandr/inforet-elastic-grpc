@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { search } from '../data/client.js';
+import { Profile } from '../pages/Profile.jsx';
 
 const App = () => {
   const [results, setResults] = useState([]);
@@ -38,6 +39,7 @@ const App = () => {
           );
         })}
       </ul>
+      <Profile />
     </div>
   );
 };
