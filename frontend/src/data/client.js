@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web';
 
 const { IR } = require('./data_pb_service.js');
-const { QueryRequest, ResultEntry } = require('./data_pb.js');
+const { QueryRequest, UserData, UserID, ResultEntry } = require('./data_pb.js');
 
 // Simple example wrapper that will make a request to the gRPC backend.
 export const search = (queryString, cb) => {
@@ -39,3 +39,36 @@ const dataMapToObject = (dataMap) => {
   return ret;
 }
 
+// setUserData will send a request to "sign up a user". This will write a new user to the server and respond with the new ID.
+export const setUserData = (data) => {
+  var req = new UserData();
+  req.setName(data['name']);
+  req.setAge(data['age']);
+  req.setSex(data['sex']);
+  data['languages'].map((e, i) => req.getLanguagesMap().set(i, e));
+  data['topics'].map((e, i) => req.getTopicsMap().set(i, e));
+
+  const call = grpc.unary(IR.SignupUser, {
+    host: 'http://localhost:8080',
+    metadata: new grpc.Metadata({ Info: 'uID' }),
+    onEnd: (resp) => {
+      console.log("onEnd",resp);
+    },
+    request: req
+  });
+}
+
+// getUserData will take an id and return with the underlying data for that user.
+export const getUserData = (id) => {
+  var req = new UserID();
+  req.setId(id);
+  const call = grpc.unary(IR.UserInfo, {
+    host: 'http://localhost:8080',
+    metadata: new grpc.Metadata({ Info: 'uID' }),
+    onEnd: (resp) => {
+      console.log("onEnd",resp);
+    },
+    request: req
+  });
+
+}
