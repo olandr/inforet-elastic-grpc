@@ -67,11 +67,11 @@ export const Profile = () => {
           type='submit'
           value='Submit'
           variant={'contained'}
-          style={{ color: '#FFF', backgroundColor: '#4285F4' }}
+          style={{ marginBottom: '4px', color: '#FFF', backgroundColor: '#4285F4' }}
         >
           Save
         </Button>
-        <div style={{ width: '100%', backgroundColor: '#E6E6E6' }}>
+        <div style={{ padding: '4px', width: '100%', backgroundColor: '#E6E6E6' }}>
           <TextField
             id='name'
             label='Name'
@@ -93,7 +93,7 @@ export const Profile = () => {
             </Select>
           </FormControl>
         </div>
-        <div style={{ width: '100%', backgroundColor: '#FAFAFA' }}>
+        <div style={{ padding: '4px', width: '100%', backgroundColor: '#FAFAFA' }}>
           <FormControl className={classes.root} style={{ color: '#000' }}>
             <FormLabel id='languages'>Languages</FormLabel>
             {valid_languages.map((e, i) => (
