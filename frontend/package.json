@@ -28,7 +28,7 @@
     "husky": "^4.3.4",
     "lint-staged": "^10.5.3",
     "node-gyp-build": "^4.2.3",
-    "parcel": "^2.0.0-nightly.614",
+    "parcel-bundler": "^1.12.5",
     "postcss": "^8.2.6",
     "prettier": "^2.2.1",
     "sass": "^1.30.0"
