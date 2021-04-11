@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './profile.scss';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -39,11 +38,12 @@ const valid_topics = [
 ];
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-    minWidth: 120,
+  root: {
+    minWidth: 200,
+    padding: '4px',
   },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
+  small: {
+    minWidth: 200,
   },
 }));
 
@@ -61,41 +61,72 @@ export const Profile = () => {
   };
 
   return (
-    <div id='profile-box'>
+    <div id='profile-box' style={{ width: '600px' }}>
       <form id='profile-settings' onSubmit={handleSubmit}>
-        <Button type='submit' value='Submit'>
+        <Button
+          type='submit'
+          value='Submit'
+          variant={'contained'}
+          style={{ color: '#FFF', backgroundColor: '#4285F4' }}
+        >
           Save
         </Button>
-        <TextField id='name' label='Name' onChange={(e) => setName(e.target.value)}></TextField>
-        <TextField id='age' label='Age' onChange={(e) => setAge(e.target.value)}></TextField>
-        <FormControl className={classes.formControl}>
-          <InputLabel id='sex'>Sex</InputLabel>
-          <Select labelId='sex' name='sex' value={sex} onChange={(e) => setSex(e.target.value)}>
-            <MenuItem value='M'>Male</MenuItem>
-            <MenuItem value='F'>Female</MenuItem>
-            <MenuItem value='O'>Other</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl className={classes.formControl}>
-          <FormLabel id='languages'>Languages</FormLabel>
-          {valid_languages.map((e, i) => (
-            <FormControlLabel
-              key={i}
-              control={<Checkbox name={e.toLocaleLowerCase()} onChange={() => setLanguages((p) => [...p, e])} />}
-              label={e}
-            />
-          ))}
-        </FormControl>
-        <FormControl className={classes.formControl}>
-          <FormLabel id='topics'>Topics</FormLabel>
-          {valid_topics.map((e, i) => (
-            <FormControlLabel
-              key={i}
-              control={<Checkbox name={e.toLocaleLowerCase()} onChange={() => setTopics((p) => [...p, e])} />}
-              label={e}
-            />
-          ))}
-        </FormControl>
+        <div style={{ width: '100%', backgroundColor: '#E6E6E6' }}>
+          <TextField
+            id='name'
+            label='Name'
+            onChange={(e) => setName(e.target.value)}
+            style={{ width: '200px' }}
+          ></TextField>
+          <TextField
+            id='age'
+            label='Age'
+            onChange={(e) => setAge(e.target.value)}
+            style={{ width: '100px' }}
+          ></TextField>
+          <FormControl style={{ width: '100px' }}>
+            <InputLabel id='sex'>Sex</InputLabel>
+            <Select labelId='sex' name='sex' value={sex} onChange={(e) => setSex(e.target.value)}>
+              <MenuItem value='M'>Male</MenuItem>
+              <MenuItem value='F'>Female</MenuItem>
+              <MenuItem value='O'>Other</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        <div style={{ width: '100%', backgroundColor: '#FAFAFA' }}>
+          <FormControl className={classes.root} style={{ color: '#000' }}>
+            <FormLabel id='languages'>Languages</FormLabel>
+            {valid_languages.map((e, i) => (
+              <FormControlLabel
+                key={i}
+                control={
+                  <Checkbox
+                    color={'default'}
+                    name={e.toLocaleLowerCase()}
+                    onChange={() => setLanguages((p) => [...p, e])}
+                  />
+                }
+                label={e}
+              />
+            ))}
+          </FormControl>
+          <FormControl className={classes.root} style={{ color: '#000' }}>
+            <FormLabel id='topics'>Topics</FormLabel>
+            {valid_topics.map((e, i) => (
+              <FormControlLabel
+                key={i}
+                control={
+                  <Checkbox
+                    color={'default'}
+                    name={e.toLocaleLowerCase()}
+                    onChange={() => setTopics((p) => [...p, e])}
+                  />
+                }
+                label={e}
+              />
+            ))}
+          </FormControl>
+        </div>
       </form>
     </div>
   );
