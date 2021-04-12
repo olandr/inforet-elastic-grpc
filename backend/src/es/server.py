@@ -3,6 +3,7 @@ from concurrent import futures
 import grpc
 import data_pb2
 import data_pb2_grpc
+import random
 
 class Server(data_pb2_grpc.IRServicer):
   def __init__(self, esc):
@@ -18,33 +19,17 @@ class Server(data_pb2_grpc.IRServicer):
       yield data_pb2.ResultEntry(
         id=hit['_id'],
         score=hit['_score'],
+        is_read=(random.random() < 0.5),
         data=data
       )
   
-  def SignupUser(self, request, context):
-    # FIXME: utilise a class or a more sophisticated ds for User rep. (fetch from db?)
-    user = {}
-    user['name'] = request.name
-    user['age'] = request.age
-    user['sex'] = request.sex
-    user['languages'] = request.languages
-    user['topics'] = request.topics
-
-    # FIXME: Generate ID
-    userID = 13
-    return data_pb2.UserID(id=userID)
+  def ReadBook(self, request, context):
+    # FIXME: set db or similar to keep track of read docs.
+    return data_pb2.UserID(id=request.userID)
   
-  def UserInfo(self, request, context):
-    userID = request.id
-    # FIXME: get actual user info
-    user = data_pb2.UserData(
-      name = 'Batman',
-      age = 100,
-      sex = 'M',
-      languages = {0:'English', 1: 'German'},
-      topics = {0:'Teen', 1: 'Magic'}
-    )
-    return user
+  def RateBook(self, request, context):
+    # FIXME: set db or similar to keep track of rated docs.
+    return data_pb2.UserID(id=request.userID)
 
 def serve_grpc(esc):
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

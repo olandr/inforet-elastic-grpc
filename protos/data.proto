@@ -6,8 +6,8 @@ package ir.search;
 
 service IR {
   rpc QueryES(QueryRequest) returns (stream ResultEntry);
-  rpc SignupUser(UserData) returns (UserID);
-  rpc UserInfo(UserID) returns (UserData);
+  rpc ReadBook(UsageData) returns (UserID);
+  rpc RateBook(UsageData) returns (UserID);
 }
 
 message QueryRequest{
@@ -19,15 +19,15 @@ message QueryRequest{
 message ResultEntry {
   string id = 1;
   double score = 2;
-  map<string, string> data = 3;
+  bool is_read = 3;
+  map<string, string> data = 4;
 }
 
-message UserData {
-  string name = 1;
-  int64 age = 2;
-  string sex = 3;
-  map<int64, string> languages = 4;
-  map<int64, string> topics = 5;
+message UsageData {
+  int64 user_ID = 1;
+  string document_ID = 2;
+  bool is_read = 3;
+  int64 rating = 4;
 }
 
 message UserID {

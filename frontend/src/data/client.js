@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web';
 
 const { IR } = require('./data_pb_service.js');
-const { QueryRequest, UserData, UserID, ResultEntry } = require('./data_pb.js');
+const { QueryRequest, UsageData, ResultEntry } = require('./data_pb.js');
 
 // Simple example wrapper that will make a request to the gRPC backend.
 export const search = (queryString, cb) => {
@@ -39,16 +39,13 @@ const dataMapToObject = (dataMap) => {
   return ret;
 }
 
-// setUserData will send a request to "sign up a user". This will write a new user to the server and respond with the new ID.
-export const setUserData = (data) => {
-  var req = new UserData();
-  req.setName(data['name']);
-  req.setAge(data['age']);
-  req.setSex(data['sex']);
-  data['languages'].map((e, i) => req.getLanguagesMap().set(i, e));
-  data['topics'].map((e, i) => req.getTopicsMap().set(i, e));
-
-  const call = grpc.unary(IR.SignupUser, {
+// setReadBook will send a request to the server that will mark a particular document as read.
+export const setReadBook = (data) => {
+  var req = new UsageData();
+  req.setUserId(data['userID']);
+  req.setDocumentId(data['documentID']);
+  req.setIsRead(data['is_read']);
+  const call = grpc.unary(IR.ReadBook, {
     host: 'http://localhost:8080',
     metadata: new grpc.Metadata({ Info: 'uID' }),
     onEnd: (resp) => {
@@ -58,11 +55,13 @@ export const setUserData = (data) => {
   });
 }
 
-// getUserData will take an id and return with the underlying data for that user.
-export const getUserData = (id) => {
-  var req = new UserID();
-  req.setId(id);
-  const call = grpc.unary(IR.UserInfo, {
+// setRateBook will send a requst to the server and set the mapping userID, documentID -> rating
+export const setRateBook = (data) => {
+  var req = new UsageData();
+  req.setUserId(data['userID']);
+  req.setDocumentId(data['documentID']);
+  req.setRating(data['rating']);
+  const call = grpc.unary(IR.RateBook, {
     host: 'http://localhost:8080',
     metadata: new grpc.Metadata({ Info: 'uID' }),
     onEnd: (resp) => {

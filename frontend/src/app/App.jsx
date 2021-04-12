@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { search, getUserData, setUserData } from '../data/client.js';
+import { search, setReadBook, setRat, setReadBookeBook, setRateBook } from '../data/client.js';
 
 const App = () => {
   const [results, setResults] = useState([]);
@@ -21,18 +21,26 @@ const App = () => {
       </form>
       <button
         onClick={() =>
-          setUserData({
-            name: 'Simon',
-            languages: ['German', 'French', 'Japanese', 'Norwegian'],
-            topics: ['Romance', 'Short', 'Adventure', 'Mystery'],
-            age: 10,
-            sex: 'F',
+          setReadBook({
+            userID: 1,
+            documentID: '3TJ9EF93',
+            is_read: true,
           })
         }
       >
         Set USER
       </button>
-      <button onClick={() => getUserData(1)}>Get USER</button>
+      <button
+        onClick={() =>
+          setRateBook({
+            userID: 1,
+            documentID: '3TJ9EF93',
+            rating: 33,
+          })
+        }
+      >
+        Rate Book
+      </button>
       <ul>
         {results?.map((obj, i) => {
           return (
