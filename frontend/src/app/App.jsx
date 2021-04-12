@@ -1,8 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { search } from '../data/client.js';
-import { Profile } from '../pages/Profile.jsx';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { SearchResult } from '../components/SearchResult.jsx';
+
+const example_record = {
+  Authors: 'J.K. Rowling',
+  'Count of text reviews': '12',
+  CountsOfReview: '12',
+  Description:
+    "A fabulous opportunity to own all seven Harry Potter titles - Harry Potter and the Philosopher's Stone, Harry Potter and the Chamber of Secrets, Harry Potter and the Prisoner of Azkaban, Harry Potter and the Goblet of Fire, Harry Potter and the Order of the Phoenix, Harry Potter and the Half-Blood Prince and Harry Potter and the Deathly Hallows- in a fantastic boxed set.",
+  ISBN: '0747593698',
+  Id: '988373',
+  Language: 'en-GB',
+  Name: 'Complete Harry Potter Boxed Set',
+  PublishDay: '10',
+  PublishMonth: '1',
+  PublishYear: '2007',
+  Publisher: 'Bloomsbury Publishing',
+  Rating: '4.74',
+  RatingDist1: '1:1549',
+  RatingDist2: '2:1634',
+  RatingDist3: '3:8190',
+  RatingDist4: '4:35392',
+  RatingDist5: '5:197903',
+  RatingDistTotal: 'total:244668',
+  pagesNumber: '3421',
+};
 
 const App = () => {
   const [queryString, setQueryString] = useState('');
@@ -39,26 +63,10 @@ const App = () => {
         </form>
         <ul>
           {results?.map((obj, i) => {
-            return (
-              <div key={i}>
-                {obj.id} {obj.score}
-                <ul>
-                  {Object.entries(obj.dataMap)?.map((entry) => {
-                    return (
-                      <li>
-                        {entry[0]}: {entry[1]}
-                      </li>
-                    );
-                  })}
-                </ul>
-                <img src={`http://covers.openlibrary.org/b/ISBN/${obj.dataMap['ISBN']}-M.jpg`} />
-              </div>
-            );
+            return <SearchResult key={i} data={obj.dataMap} />;
           })}
         </ul>
       </div>
-
-      <Profile />
     </div>
   );
 };
