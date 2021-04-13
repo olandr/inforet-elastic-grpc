@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web';
 
 const { IR } = require('./data_pb_service.js');
-const { QueryRequest, ResultEntry } = require('./data_pb.js');
+const { QueryRequest, UsageData, ResultEntry } = require('./data_pb.js');
 
 // Simple example wrapper that will make a request to the gRPC backend.
 export const search = (queryString, cb) => {
@@ -39,3 +39,35 @@ const dataMapToObject = (dataMap) => {
   return ret;
 }
 
+// setReadBook will send a request to the server that will mark a particular document as read.
+export const setReadBook = (data) => {
+  var req = new UsageData();
+  req.setUserId(data['userID']);
+  req.setDocumentId(data['documentID']);
+  req.setIsRead(data['is_read']);
+  const call = grpc.unary(IR.ReadBook, {
+    host: 'http://localhost:8080',
+    metadata: new grpc.Metadata({ Info: 'uID' }),
+    onEnd: (resp) => {
+      console.log("onEnd",resp);
+    },
+    request: req
+  });
+}
+
+// setRateBook will send a requst to the server and set the mapping userID, documentID -> rating
+export const setRateBook = (data) => {
+  var req = new UsageData();
+  req.setUserId(data['userID']);
+  req.setDocumentId(data['documentID']);
+  req.setRating(data['rating']);
+  const call = grpc.unary(IR.RateBook, {
+    host: 'http://localhost:8080',
+    metadata: new grpc.Metadata({ Info: 'uID' }),
+    onEnd: (resp) => {
+      console.log("onEnd",resp);
+    },
+    request: req
+  });
+
+}

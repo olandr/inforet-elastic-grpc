@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ndata.proto\x12\tir.search\")\n\x0cQueryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\"\x85\x01\n\x0bResultEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12.\n\x04\x64\x61ta\x18\x03 \x03(\x0b\x32 .ir.search.ResultEntry.DataEntry\x1a+\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\x42\n\x02IR\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x62\x06proto3'
+  serialized_pb=b'\n\ndata.proto\x12\tir.search\")\n\x0cQueryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\"\x96\x01\n\x0bResultEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12.\n\x04\x64\x61ta\x18\x04 \x03(\x0b\x32 .ir.search.ResultEntry.DataEntry\x1a+\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"R\n\tUsageData\x12\x0f\n\x07user_ID\x18\x01 \x01(\x03\x12\x13\n\x0b\x64ocument_ID\x18\x02 \x01(\t\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12\x0e\n\x06rating\x18\x04 \x01(\x03\"\x14\n\x06UserID\x12\n\n\x02id\x18\x01 \x01(\x03\x32\xac\x01\n\x02IR\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12\x33\n\x08ReadBook\x12\x14.ir.search.UsageData\x1a\x11.ir.search.UserID\x12\x33\n\x08RateBook\x12\x14.ir.search.UsageData\x1a\x11.ir.search.UserIDb\x06proto3'
 )
 
 
@@ -98,8 +98,8 @@ _RESULTENTRY_DATAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=159,
-  serialized_end=202,
+  serialized_start=176,
+  serialized_end=219,
 )
 
 _RESULTENTRY = _descriptor.Descriptor(
@@ -125,8 +125,15 @@ _RESULTENTRY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='data', full_name='ir.search.ResultEntry.data', index=2,
-      number=3, type=11, cpp_type=10, label=3,
+      name='is_read', full_name='ir.search.ResultEntry.is_read', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='data', full_name='ir.search.ResultEntry.data', index=3,
+      number=4, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -144,13 +151,100 @@ _RESULTENTRY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=69,
-  serialized_end=202,
+  serialized_end=219,
+)
+
+
+_USAGEDATA = _descriptor.Descriptor(
+  name='UsageData',
+  full_name='ir.search.UsageData',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_ID', full_name='ir.search.UsageData.user_ID', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='document_ID', full_name='ir.search.UsageData.document_ID', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='is_read', full_name='ir.search.UsageData.is_read', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='rating', full_name='ir.search.UsageData.rating', index=3,
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=221,
+  serialized_end=303,
+)
+
+
+_USERID = _descriptor.Descriptor(
+  name='UserID',
+  full_name='ir.search.UserID',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='ir.search.UserID.id', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=305,
+  serialized_end=325,
 )
 
 _RESULTENTRY_DATAENTRY.containing_type = _RESULTENTRY
 _RESULTENTRY.fields_by_name['data'].message_type = _RESULTENTRY_DATAENTRY
 DESCRIPTOR.message_types_by_name['QueryRequest'] = _QUERYREQUEST
 DESCRIPTOR.message_types_by_name['ResultEntry'] = _RESULTENTRY
+DESCRIPTOR.message_types_by_name['UsageData'] = _USAGEDATA
+DESCRIPTOR.message_types_by_name['UserID'] = _USERID
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 QueryRequest = _reflection.GeneratedProtocolMessageType('QueryRequest', (_message.Message,), {
@@ -175,6 +269,20 @@ ResultEntry = _reflection.GeneratedProtocolMessageType('ResultEntry', (_message.
 _sym_db.RegisterMessage(ResultEntry)
 _sym_db.RegisterMessage(ResultEntry.DataEntry)
 
+UsageData = _reflection.GeneratedProtocolMessageType('UsageData', (_message.Message,), {
+  'DESCRIPTOR' : _USAGEDATA,
+  '__module__' : 'data_pb2'
+  # @@protoc_insertion_point(class_scope:ir.search.UsageData)
+  })
+_sym_db.RegisterMessage(UsageData)
+
+UserID = _reflection.GeneratedProtocolMessageType('UserID', (_message.Message,), {
+  'DESCRIPTOR' : _USERID,
+  '__module__' : 'data_pb2'
+  # @@protoc_insertion_point(class_scope:ir.search.UserID)
+  })
+_sym_db.RegisterMessage(UserID)
+
 
 _RESULTENTRY_DATAENTRY._options = None
 
@@ -185,8 +293,8 @@ _IR = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=204,
-  serialized_end=270,
+  serialized_start=328,
+  serialized_end=500,
   methods=[
   _descriptor.MethodDescriptor(
     name='QueryES',
@@ -195,6 +303,26 @@ _IR = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_QUERYREQUEST,
     output_type=_RESULTENTRY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ReadBook',
+    full_name='ir.search.IR.ReadBook',
+    index=1,
+    containing_service=None,
+    input_type=_USAGEDATA,
+    output_type=_USERID,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='RateBook',
+    full_name='ir.search.IR.RateBook',
+    index=2,
+    containing_service=None,
+    input_type=_USAGEDATA,
+    output_type=_USERID,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

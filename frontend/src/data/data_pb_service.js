@@ -19,6 +19,24 @@ IR.QueryES = {
   responseType: data_pb.ResultEntry
 };
 
+IR.ReadBook = {
+  methodName: "ReadBook",
+  service: IR,
+  requestStream: false,
+  responseStream: false,
+  requestType: data_pb.UsageData,
+  responseType: data_pb.UserID
+};
+
+IR.RateBook = {
+  methodName: "RateBook",
+  service: IR,
+  requestStream: false,
+  responseStream: false,
+  requestType: data_pb.UsageData,
+  responseType: data_pb.UserID
+};
+
 exports.IR = IR;
 
 function IRClient(serviceHost, options) {
@@ -60,6 +78,68 @@ IRClient.prototype.queryES = function queryES(requestMessage, metadata) {
     },
     cancel: function () {
       listeners = null;
+      client.close();
+    }
+  };
+};
+
+IRClient.prototype.readBook = function readBook(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(IR.ReadBook, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+IRClient.prototype.rateBook = function rateBook(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(IR.RateBook, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
       client.close();
     }
   };

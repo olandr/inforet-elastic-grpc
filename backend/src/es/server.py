@@ -3,6 +3,7 @@ from concurrent import futures
 import grpc
 import data_pb2
 import data_pb2_grpc
+import random
 
 class Server(data_pb2_grpc.IRServicer):
   def __init__(self, esc):
@@ -18,8 +19,17 @@ class Server(data_pb2_grpc.IRServicer):
       yield data_pb2.ResultEntry(
         id=hit['_id'],
         score=hit['_score'],
+        is_read=(random.random() < 0.5),
         data=data
       )
+  
+  def ReadBook(self, request, context):
+    # FIXME: set db or similar to keep track of read docs.
+    return data_pb2.UserID(id=request.userID)
+  
+  def RateBook(self, request, context):
+    # FIXME: set db or similar to keep track of rated docs.
+    return data_pb2.UserID(id=request.userID)
 
 def serve_grpc(esc):
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

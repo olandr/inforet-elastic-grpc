@@ -19,12 +19,34 @@ class IRStub(object):
                 request_serializer=data__pb2.QueryRequest.SerializeToString,
                 response_deserializer=data__pb2.ResultEntry.FromString,
                 )
+        self.ReadBook = channel.unary_unary(
+                '/ir.search.IR/ReadBook',
+                request_serializer=data__pb2.UsageData.SerializeToString,
+                response_deserializer=data__pb2.UserID.FromString,
+                )
+        self.RateBook = channel.unary_unary(
+                '/ir.search.IR/RateBook',
+                request_serializer=data__pb2.UsageData.SerializeToString,
+                response_deserializer=data__pb2.UserID.FromString,
+                )
 
 
 class IRServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def QueryES(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReadBook(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RateBook(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -37,6 +59,16 @@ def add_IRServicer_to_server(servicer, server):
                     servicer.QueryES,
                     request_deserializer=data__pb2.QueryRequest.FromString,
                     response_serializer=data__pb2.ResultEntry.SerializeToString,
+            ),
+            'ReadBook': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReadBook,
+                    request_deserializer=data__pb2.UsageData.FromString,
+                    response_serializer=data__pb2.UserID.SerializeToString,
+            ),
+            'RateBook': grpc.unary_unary_rpc_method_handler(
+                    servicer.RateBook,
+                    request_deserializer=data__pb2.UsageData.FromString,
+                    response_serializer=data__pb2.UserID.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -62,5 +94,39 @@ class IR(object):
         return grpc.experimental.unary_stream(request, target, '/ir.search.IR/QueryES',
             data__pb2.QueryRequest.SerializeToString,
             data__pb2.ResultEntry.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReadBook(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ir.search.IR/ReadBook',
+            data__pb2.UsageData.SerializeToString,
+            data__pb2.UserID.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RateBook(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ir.search.IR/RateBook',
+            data__pb2.UsageData.SerializeToString,
+            data__pb2.UserID.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
