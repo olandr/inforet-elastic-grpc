@@ -3,6 +3,9 @@ import { search } from '../data/client.js';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { SearchResult } from '../components/SearchResult.jsx';
+import { Users } from '../components/Users.jsx';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 const example_record = {
   Authors: 'J.K. Rowling',
@@ -31,6 +34,8 @@ const example_record = {
 const App = () => {
   const [queryString, setQueryString] = useState('');
   const [results, setResults] = useState([]);
+  // FIXME?: redux seems overkill so a cb to this state should suffice. Unless we set the currentUser server-side?
+  const [currentUser, setCurrentUser] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page-reload
@@ -43,7 +48,7 @@ const App = () => {
 
   return (
     <div style={{ display: 'flex', margin: '0 32px', justifyContent: 'space-between' }}>
-      <div>
+      <div style={{ width: '70%' }}>
         <h1>Google has got nothing on us!</h1>
         <form onSubmit={(e) => handleSubmit(e)} style={{ display: 'flex' }}>
           <TextField
@@ -67,6 +72,12 @@ const App = () => {
           })}
         </ul>
       </div>
+      <Card style={{ width: '25%' }}>
+        <CardContent>
+          <h2 style={{ margin: 0 }}>Current user: {currentUser}</h2>
+          <Users setCurrentUser={(name) => setCurrentUser(name)} />
+        </CardContent>
+      </Card>
     </div>
   );
 };
