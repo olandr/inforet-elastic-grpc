@@ -5,9 +5,10 @@ package ir.search;
 //import "google/protobuf/struct.proto";
 
 service IR {
+  rpc CreateUser(User) returns (User);
   rpc QueryES(QueryRequest) returns (stream ResultEntry);
-  rpc ReadBook(UsageData) returns (UserID);
-  rpc RateBook(UsageData) returns (UserID);
+  rpc ReadBook(UsageData) returns (User);
+  rpc RateBook(UsageData) returns (User);
 }
 
 message QueryRequest{
@@ -30,6 +31,7 @@ message UsageData {
   int64 rating = 4;
 }
 
-message UserID {
+message User {
   int64 id = 1;
+  string name = 2;
 }

@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { createUser } from '../data/client.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +54,10 @@ const UserForm = () => {
     e.preventDefault(); // Prevents page-reload
     if (name !== '') {
       console.log('new user:', name);
+      createUser({
+        id: 313,
+        name: name,
+      });
     }
   };
 
