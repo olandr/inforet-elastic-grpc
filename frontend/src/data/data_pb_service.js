@@ -19,6 +19,16 @@ IR.QueryES = {
   responseType: data_pb.ResultEntry
 };
 
+IR.QueryCustom = {
+  methodName: "QueryCustom",
+  service: IR,
+  requestStream: false,
+  responseStream: true,
+  requestType: data_pb.QueryRequest,
+  responseType: data_pb.ResultEntry
+};
+
+
 IR.ReadBook = {
   methodName: "ReadBook",
   service: IR,

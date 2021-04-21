@@ -31,11 +31,12 @@ const example_record = {
 const App = () => {
   const [queryString, setQueryString] = useState('');
   const [results, setResults] = useState([]);
+  const [customQuery, setCustomQuery] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page-reload
     if (queryString !== '') {
-      search(queryString, function (v) {
+      search(queryString, customQuery, function (v) {
         setResults((prev) => [...prev, v]);
       });
     }
@@ -45,6 +46,10 @@ const App = () => {
     <div style={{ display: 'flex', margin: '0 32px', justifyContent: 'space-between' }}>
       <div>
         <h1>Google has got nothing on us!</h1>
+        <p>
+          Use custom query: {customQuery ? 'Yes' : 'No'}
+          <button onClick={() => setCustomQuery((v) => !v)}>Toggle Query Type</button>
+        </p>
         <form onSubmit={(e) => handleSubmit(e)} style={{ display: 'flex' }}>
           <TextField
             id='query'
@@ -63,7 +68,11 @@ const App = () => {
         </form>
         <ul>
           {results?.map((obj, i) => {
-            return <SearchResult key={i} data={obj.dataMap} />;
+            return (
+              <div>
+                <SearchResult key={i} data={obj.dataMap} score={obj.score} />
+              </div>
+            );
           })}
         </ul>
       </div>

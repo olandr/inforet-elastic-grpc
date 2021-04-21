@@ -4,9 +4,9 @@ const { IR } = require('./data_pb_service.js');
 const { QueryRequest, UsageData, ResultEntry } = require('./data_pb.js');
 
 // Simple example wrapper that will make a request to the gRPC backend.
-export const search = (queryString, cb) => {
-  var stub = grpc.client(IR.QueryES, { host: 'http://localhost:8080' });
-  console.log(stub);
+export const search = (queryString, customQuery, cb) => {
+  const queryType = customQuery ? IR.QueryCustom : IR.QueryES
+  var stub = grpc.client(queryType, { host: 'http://localhost:8080' });
 
   var request = new QueryRequest();
   request.setQuery(queryString);

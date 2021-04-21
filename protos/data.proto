@@ -6,6 +6,7 @@ package ir.search;
 
 service IR {
   rpc QueryES(QueryRequest) returns (stream ResultEntry);
+  rpc QueryCustom(QueryRequest) returns (stream ResultEntry);
   rpc ReadBook(UsageData) returns (UserID);
   rpc RateBook(UsageData) returns (UserID);
 }

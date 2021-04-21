@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ndata.proto\x12\tir.search\")\n\x0cQueryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\"\x96\x01\n\x0bResultEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12.\n\x04\x64\x61ta\x18\x04 \x03(\x0b\x32 .ir.search.ResultEntry.DataEntry\x1a+\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"R\n\tUsageData\x12\x0f\n\x07user_ID\x18\x01 \x01(\x03\x12\x13\n\x0b\x64ocument_ID\x18\x02 \x01(\t\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12\x0e\n\x06rating\x18\x04 \x01(\x03\"\x14\n\x06UserID\x12\n\n\x02id\x18\x01 \x01(\x03\x32\xac\x01\n\x02IR\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12\x33\n\x08ReadBook\x12\x14.ir.search.UsageData\x1a\x11.ir.search.UserID\x12\x33\n\x08RateBook\x12\x14.ir.search.UsageData\x1a\x11.ir.search.UserIDb\x06proto3'
+  serialized_pb=b'\n\ndata.proto\x12\tir.search\")\n\x0cQueryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\"\x96\x01\n\x0bResultEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12.\n\x04\x64\x61ta\x18\x04 \x03(\x0b\x32 .ir.search.ResultEntry.DataEntry\x1a+\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"R\n\tUsageData\x12\x0f\n\x07user_ID\x18\x01 \x01(\x03\x12\x13\n\x0b\x64ocument_ID\x18\x02 \x01(\t\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12\x0e\n\x06rating\x18\x04 \x01(\x03\"\x14\n\x06UserID\x12\n\n\x02id\x18\x01 \x01(\x03\x32\xee\x01\n\x02IR\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12@\n\x0bQueryCustom\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12\x33\n\x08ReadBook\x12\x14.ir.search.UsageData\x1a\x11.ir.search.UserID\x12\x33\n\x08RateBook\x12\x14.ir.search.UsageData\x1a\x11.ir.search.UserIDb\x06proto3'
 )
 
 
@@ -294,7 +294,7 @@ _IR = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=328,
-  serialized_end=500,
+  serialized_end=566,
   methods=[
   _descriptor.MethodDescriptor(
     name='QueryES',
@@ -307,9 +307,19 @@ _IR = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='QueryCustom',
+    full_name='ir.search.IR.QueryCustom',
+    index=1,
+    containing_service=None,
+    input_type=_QUERYREQUEST,
+    output_type=_RESULTENTRY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='ReadBook',
     full_name='ir.search.IR.ReadBook',
-    index=1,
+    index=2,
     containing_service=None,
     input_type=_USAGEDATA,
     output_type=_USERID,
@@ -319,7 +329,7 @@ _IR = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='RateBook',
     full_name='ir.search.IR.RateBook',
-    index=2,
+    index=3,
     containing_service=None,
     input_type=_USAGEDATA,
     output_type=_USERID,
