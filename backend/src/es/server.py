@@ -4,14 +4,15 @@ import grpc
 import data_pb2
 import data_pb2_grpc
 import random
-from rerank_method import User
+from models import User, Book
+from es_dictionaries_examples import book_1, book_2, book_3
 
 
 class Server(data_pb2_grpc.IRServicer):
     def __init__(self, esc):
         self.es_client = esc
-        self.user = User()
-        print(self.user)
+        self.user = User(language_sensibility=10)
+        self.user.read_book(Book(book_3))
 
     def QueryES(self, request, context):
         res = self.es_client.raw_query(

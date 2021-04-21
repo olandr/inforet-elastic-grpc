@@ -15,25 +15,26 @@ from gensim.models.hdpmodel import HdpModel
 from gensim.test.utils import datapath
 
 new_stop_words = [
-"get",
-"way",
-"because",
-"page",
-"people",
-"people's",
-"easy",
-"easier",
-"need",
-"make",
-"use",
-"using",
-"useful",
-"like",
-"i'm",
-"became",
-"could",
-"wish"
+    "get",
+    "way",
+    "because",
+    "page",
+    "people",
+    "people's",
+    "easy",
+    "easier",
+    "need",
+    "make",
+    "use",
+    "using",
+    "useful",
+    "like",
+    "i'm",
+    "became",
+    "could",
+    "wish",
 ]
+
 
 def transformText(text):
     stops = set(stopwords.words("english"))
@@ -41,14 +42,14 @@ def transformText(text):
     # Convert text to lower
     text = text.lower()
     # Removing non ASCII chars
-    text = re.sub(r'[^\x00-\x7f]',r' ',text)
+    text = re.sub(r"[^\x00-\x7f]", r" ", text)
     # Remove the punctuation
     text = gensim.parsing.preprocessing.strip_punctuation2(text)
     # Strip all the numerics
     text = gensim.parsing.preprocessing.strip_numeric(text)
     # Strip multiple whitespaces
     text = gensim.corpora.textcorpus.strip_multiple_whitespaces(text)
-    #for rem in rem_list:
+    # for rem in rem_list:
     #    text = text.replace(rem.lower(), '')
     text = gensim.corpora.textcorpus.strip_multiple_whitespaces(text)
     text = text.replace(" ui ", " user interface ")
