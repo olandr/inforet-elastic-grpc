@@ -21,11 +21,12 @@ export const SearchResult = (props) => {
   const classes = useStyles();
   const [rating, setRating] = useState(null);
 
-  const handleRateBook = () => {
+  const handleRateBook = (r) => {
+    setRating(r);
     let usageData = {
       userID: props.currentUser,
       documentID: props.id,
-      rating: rating,
+      rating: r,
       documentScore: props.score,
     };
     console.log('usageData', usageData);
@@ -65,14 +66,7 @@ export const SearchResult = (props) => {
         <Button size='small' onClick={() => handleReadBook()}>
           Read
         </Button>
-        <Rating
-          name={props.data['Id']}
-          value={rating}
-          onChange={(_, r) => {
-            setRating(r);
-            handleRateBook(r);
-          }}
-        />
+        <Rating name={props.id} value={rating} onChange={(_, r) => handleRateBook(r)} />
       </CardActions>
     </Card>
   );
