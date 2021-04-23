@@ -1,18 +1,37 @@
 from google.protobuf.struct_pb2 import Struct
 from concurrent import futures
+import os
 import grpc
-import data_pb2
-import data_pb2_grpc
 import random
-from models import User, Book
-from es_dictionaries_examples import book_1, book_2, book_3
+import numpy as np
+
+from es import data_pb2, data_pb2_grpc
+from rerank_algorithm.es_dictionaries_examples import book_3
+from rerank_algorithm.loader import book_topics_loader
+from rerank_algorithm.models import Book, User
 
 
 class Server(data_pb2_grpc.IRServicer):
     def __init__(self, esc):
         self.es_client = esc
-        self.user = User(language_sensibility=10)
-        self.user.read_book(Book(book_3))
+
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        lda_matrix_path = os.path.join(
+            dir_path, "..", "..", "..", "simulation", "lda_matrix.pkl"
+        )
+
+        # TO DO: Loading topic data the way is only a temporary solution. We should integrate them into ES.
+        self.book_topics = book_topics_loader(lda_matrix_path)
+
+        # Here is an example of how to use the User API.
+        self.user = User(language_sensibility=10, interest_sensibility=1)
+        book_3_obj = Book(book_3, self.book_topics[int(book_3["_source"]["Id"])])
+        self.user.read_book(
+            book_3_obj
+        )
+        self.user.rate_book(book_3_obj, grade=0)
+
+        print("--SERVER INITIALIZATION DONE-- ")
 
     def QueryES(self, request, context):
         res = self.es_client.raw_query(
@@ -39,12 +58,19 @@ class Server(data_pb2_grpc.IRServicer):
         for hit in res["hits"]["hits"]:
 
             print("HIT", hit)
-            book_data = self.user.get_book_updated_score(hit)
+            book_id = int(hit["_source"]["Id"])
+            book_topics_arr = (
+                self.book_topics[book_id]
+                if book_id in self.book_topics
+                else np.array([1 / 100 for _ in range(100)])
+            )
+            book_data = self.user.get_book_updated_score(hit, book_topics_arr)
             results.append(book_data)
             print("UPDATED HIT", book_data)
             print()
 
-        results_sorted = sorted(results, key=lambda k: k['_score'], reverse=True)
+        # Results are reranked with the new score.
+        results_sorted = sorted(results, key=lambda k: k["_score"], reverse=True)
 
         for hit in results_sorted:
             data = Struct()

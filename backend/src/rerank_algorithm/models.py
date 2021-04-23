@@ -55,11 +55,11 @@ LANGUAGE_LIST = [
 
 
 class Book:
-    def __init__(self, es_dict):
+    def __init__(self, es_dict, topics_arr):
         self.score = es_dict["_score"]
         self.name = es_dict["_source"]["Name"]
         self.language = es_dict["_source"]["Language"]
-        self.topics = np.array([1 / 100 for _ in range(100)])
+        self.topics = topics_arr
 
     def __str__(self):
         return self.name
@@ -74,6 +74,13 @@ class User:
         interest_learning_rate=0.1,
         interest_sensibility=1,
     ):
+        """
+        :param interest_size: size of the interests array = nb of topics of the LDA.
+        :param language_learning_rate: represents how fast the language array of the user will change at each interaction.
+        :param language_sensibility: represents how important is the language in the personalized score.
+        :param interest_learning_rate: represents how fast the interests array of the user will change at each interaction.
+        :param interest_sensibility: represents how important are the interests in the personalized score.
+        """
 
         self.num_languages = len(LANGUAGE_LIST)
         self.languages = {}
@@ -102,6 +109,7 @@ class User:
     def update_interest(self, topics, multiplier):
         alpha = multiplier * self.interest_learning_rate
         self.interests += alpha * topics
+        self.interests = self.interests.clip(min=0)
         norm = np.linalg.norm(self.interests)
         self.interests /= norm
 
@@ -109,11 +117,18 @@ class User:
         return np.dot(self.interests, book.topics)
 
     def read_book(self, book):
+        """
+        Reading a book tells about your interests and the language(s) you speak. So it modifies the interests array
+        and the language array of the user.
+        """
         self.update_language(book.language)
         self.update_interest(book.topics, multiplier=1)
 
     def rate_book(self, book, grade):
-        multiplier = grade - 5
+        """
+        Rating a book tells about your interests. It modifies the interests array of the user.
+        """
+        multiplier = grade - 2.5
         self.update_interest(book.topics, multiplier=multiplier)
 
     def get_personalized_score(self, book):
@@ -121,8 +136,8 @@ class User:
             book.language
         ] + self.interest_sensibility * self.get_interest_score(book)
 
-    def get_book_updated_score(self, book_es_dict):
-        book = Book(book_es_dict)
+    def get_book_updated_score(self, book_es_dict, topics_arr):
+        book = Book(book_es_dict, topics_arr)
         score = book.score + self.get_personalized_score(book)
         book_es_dict["_score"] = score
         return book_es_dict
