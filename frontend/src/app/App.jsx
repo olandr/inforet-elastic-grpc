@@ -35,7 +35,6 @@ const App = () => {
   const [queryString, setQueryString] = useState('');
   const [results, setResults] = useState([]);
   const [customQuery, setCustomQuery] = useState(true);
-  // FIXME?: redux seems overkill so a cb to this state should suffice. Unless we set the currentUser server-side?
   const [currentUser, setCurrentUser] = useState(null);
 
   const handleSubmit = (e) => {
@@ -83,7 +82,9 @@ const App = () => {
       </div>
       <Card style={{ width: '25%' }}>
         <CardContent>
-          <h2 style={{ margin: 0 }}>Current user: {currentUser}</h2>
+          <h2 style={{ margin: 0 }}>
+            Current user: {currentUser?.name} ({currentUser?.id})
+          </h2>
           <Users setCurrentUser={(name) => setCurrentUser(name)} />
         </CardContent>
       </Card>

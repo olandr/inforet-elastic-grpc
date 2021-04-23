@@ -75,15 +75,15 @@ export const setRateBook = (data) => {
 
 
 // setRateBook will send a requst to the server and set the mapping userID, documentID -> rating
-export const createUser = (data) => {
+export const createUser = (data, callback) => {
   var req = new User();
-  req.setId(data['id']);
   req.setName(data['name']);
-  const call = grpc.unary(IR.RateBook, {
+  const call = grpc.unary(IR.CreateUser, {
     host: 'http://localhost:8080',
     metadata: new grpc.Metadata({ Info: 'name' }),
     onEnd: (resp) => {
-      console.log("onEnd",resp);
+      console.log("onEnd", resp);
+      callback(resp.message.getId(), data['name']);
     },
     request: req
   });
