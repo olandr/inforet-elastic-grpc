@@ -24,18 +24,22 @@ export const SearchResult = (props) => {
   const handleRateBook = () => {
     let usageData = {
       userID: props.currentUser,
-      documentID: props.data['Id'],
+      documentID: props.id,
       rating: rating,
+      documentScore: props.score,
     };
+    console.log('usageData', usageData);
     setRateBook(usageData);
   };
 
   const handleReadBook = () => {
     let usageData = {
       userID: props.currentUser,
-      documentID: props.data['Id'],
+      documentID: props.id,
       is_read: true,
+      documentScore: props.score,
     };
+    console.log('usageData', usageData);
     setReadBook(usageData);
   };
 
@@ -61,7 +65,14 @@ export const SearchResult = (props) => {
         <Button size='small' onClick={() => handleReadBook()}>
           Read
         </Button>
-        <Rating name={props.data['Id']} value={rating} onChange={(_, r) => handleRateBook()} />
+        <Rating
+          name={props.data['Id']}
+          value={rating}
+          onChange={(_, r) => {
+            setRating(r);
+            handleRateBook(r);
+          }}
+        />
       </CardActions>
     </Card>
   );

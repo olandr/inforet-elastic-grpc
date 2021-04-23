@@ -75,7 +75,7 @@ const App = () => {
           {results?.map((obj, i) => {
             return (
               <div key={i}>
-                <SearchResult currentUser={currentUser.id} data={obj.dataMap} score={obj.score} />
+                <SearchResult currentUser={currentUser.id} id={obj.id} data={obj.dataMap} score={obj.score} />
               </div>
             );
           })}

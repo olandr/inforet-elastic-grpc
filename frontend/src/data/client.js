@@ -46,6 +46,7 @@ export const setReadBook = (data) => {
   req.setUserId(data['userID']);
   req.setDocumentId(data['documentID']);
   req.setIsRead(data['is_read']);
+  req.setDocumentScore(data['documentScore']);
   console.log(req);
   const call = grpc.unary(IR.ReadBook, {
     host: 'http://localhost:8080',
@@ -63,6 +64,7 @@ export const setRateBook = (data) => {
   req.setUserId(data['userID']);
   req.setDocumentId(data['documentID']);
   req.setRating(data['rating']);
+  req.setDocumentScore(data['documentScore']);
   console.log(req);
   const call = grpc.unary(IR.RateBook, {
     host: 'http://localhost:8080',
