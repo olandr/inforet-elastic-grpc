@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\ndata.proto\x12\tir.search\".\n\x0cQueryRequest\x12\x0f\n\x07user_ID\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\"\x96\x01\n\x0bResultEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12.\n\x04\x64\x61ta\x18\x04 \x03(\x0b\x32 .ir.search.ResultEntry.DataEntry\x1a+\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"R\n\tUsageData\x12\x0f\n\x07user_ID\x18\x01 \x01(\x03\x12\x13\n\x0b\x64ocument_ID\x18\x02 \x01(\t\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12\x0e\n\x06rating\x18\x04 \x01(\x03\" \n\x04User\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04name\x18\x02 \x01(\t2\x9a\x02\n\x02IR\x12.\n\nCreateUser\x12\x0f.ir.search.User\x1a\x0f.ir.search.User\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12@\n\x0bQueryCustom\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12\x31\n\x08ReadBook\x12\x14.ir.search.UsageData\x1a\x0f.ir.search.User\x12\x31\n\x08RateBook\x12\x14.ir.search.UsageData\x1a\x0f.ir.search.Userb\x06proto3'
+  serialized_pb=b'\n\ndata.proto\x12\tir.search\".\n\x0cQueryRequest\x12\x0f\n\x07user_ID\x18\x01 \x01(\x03\x12\r\n\x05query\x18\x02 \x01(\t\"\x96\x01\n\x0bResultEntry\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05score\x18\x02 \x01(\x01\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12.\n\x04\x64\x61ta\x18\x04 \x03(\x0b\x32 .ir.search.ResultEntry.DataEntry\x1a+\n\tDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"j\n\tUsageData\x12\x0f\n\x07user_ID\x18\x01 \x01(\x03\x12\x13\n\x0b\x64ocument_ID\x18\x02 \x01(\t\x12\x0f\n\x07is_read\x18\x03 \x01(\x08\x12\x0e\n\x06rating\x18\x04 \x01(\x03\x12\x16\n\x0e\x64ocument_score\x18\x05 \x01(\x01\" \n\x04User\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04name\x18\x02 \x01(\t2\x9a\x02\n\x02IR\x12.\n\nCreateUser\x12\x0f.ir.search.User\x1a\x0f.ir.search.User\x12<\n\x07QueryES\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12@\n\x0bQueryCustom\x12\x17.ir.search.QueryRequest\x1a\x16.ir.search.ResultEntry0\x01\x12\x31\n\x08ReadBook\x12\x14.ir.search.UsageData\x1a\x0f.ir.search.User\x12\x31\n\x08RateBook\x12\x14.ir.search.UsageData\x1a\x0f.ir.search.Userb\x06proto3'
 )
 
 
@@ -191,6 +191,13 @@ _USAGEDATA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='document_score', full_name='ir.search.UsageData.document_score', index=4,
+      number=5, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -204,7 +211,7 @@ _USAGEDATA = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=226,
-  serialized_end=308,
+  serialized_end=332,
 )
 
 
@@ -242,8 +249,8 @@ _USER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=310,
-  serialized_end=342,
+  serialized_start=334,
+  serialized_end=366,
 )
 
 _RESULTENTRY_DATAENTRY.containing_type = _RESULTENTRY
@@ -300,8 +307,8 @@ _IR = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=345,
-  serialized_end=627,
+  serialized_start=369,
+  serialized_end=651,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateUser',

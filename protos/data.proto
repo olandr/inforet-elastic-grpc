@@ -30,6 +30,7 @@ message UsageData {
   string document_ID = 2;
   bool is_read = 3;
   int64 rating = 4;
+  double document_score = 5;
 }
 
 message User {

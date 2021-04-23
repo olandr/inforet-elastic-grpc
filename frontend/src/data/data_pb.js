@@ -521,7 +521,8 @@ proto.ir.search.UsageData.toObject = function(includeInstance, msg) {
     userId: jspb.Message.getFieldWithDefault(msg, 1, 0),
     documentId: jspb.Message.getFieldWithDefault(msg, 2, ""),
     isRead: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-    rating: jspb.Message.getFieldWithDefault(msg, 4, 0)
+    rating: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    documentScore: jspb.Message.getFloatingPointFieldWithDefault(msg, 5, 0.0)
   };
 
   if (includeInstance) {
@@ -573,6 +574,10 @@ proto.ir.search.UsageData.deserializeBinaryFromReader = function(msg, reader) {
     case 4:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setRating(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readDouble());
+      msg.setDocumentScore(value);
       break;
     default:
       reader.skipField();
@@ -628,6 +633,13 @@ proto.ir.search.UsageData.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt64(
       4,
+      f
+    );
+  }
+  f = message.getDocumentScore();
+  if (f !== 0.0) {
+    writer.writeDouble(
+      5,
       f
     );
   }
@@ -703,6 +715,24 @@ proto.ir.search.UsageData.prototype.getRating = function() {
  */
 proto.ir.search.UsageData.prototype.setRating = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional double document_score = 5;
+ * @return {number}
+ */
+proto.ir.search.UsageData.prototype.getDocumentScore = function() {
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 5, 0.0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ir.search.UsageData} returns this
+ */
+proto.ir.search.UsageData.prototype.setDocumentScore = function(value) {
+  return jspb.Message.setProto3FloatField(this, 5, value);
 };
 
 
