@@ -68,6 +68,7 @@ class Book:
 class User:
     def __init__(
         self,
+        name="",
         interest_size=100,
         language_learning_rate=0.1,
         language_sensibility=1,
@@ -81,7 +82,7 @@ class User:
         :param interest_learning_rate: represents how fast the interests array of the user will change at each interaction.
         :param interest_sensibility: represents how important are the interests in the personalized score.
         """
-
+        self.name = name
         self.num_languages = len(LANGUAGE_LIST)
         self.languages = {}
         for language in LANGUAGE_LIST:
@@ -105,6 +106,9 @@ class User:
                 self.languages[l] -= self.language_learning_rate / (
                     self.num_languages - 1
                 )
+
+    def get_name(self):
+        return self.name
 
     def update_interest(self, topics, multiplier):
         alpha = multiplier * self.interest_learning_rate
