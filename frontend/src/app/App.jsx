@@ -39,6 +39,7 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page-reload
+    setResults([]);
     if (queryString !== '') {
       search(currentUser.id, queryString, customQuery, function (v) {
         setResults((prev) => [...prev, v]);
@@ -73,8 +74,8 @@ const App = () => {
         <ul>
           {results?.map((obj, i) => {
             return (
-              <div>
-                <SearchResult key={i} data={obj.dataMap} score={obj.score} />
+              <div key={i}>
+                <SearchResult currentUser={currentUser.id} data={obj.dataMap} score={obj.score} />
               </div>
             );
           })}

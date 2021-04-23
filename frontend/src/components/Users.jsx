@@ -48,7 +48,6 @@ export const Users = (props) => {
 };
 
 const User = (props) => {
-  console.log(props.data);
   return (
     <ListItem button onClick={props.handleClick}>
       <ListItemText>{props.data.name}</ListItemText>
