@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import data_pb2 as data__pb2
+import es.data_pb2 as data__pb2
 
 
 class IRStub(object):
@@ -16,6 +16,11 @@ class IRStub(object):
         """
         self.QueryES = channel.unary_stream(
                 '/ir.search.IR/QueryES',
+                request_serializer=data__pb2.QueryRequest.SerializeToString,
+                response_deserializer=data__pb2.ResultEntry.FromString,
+                )
+        self.QueryCustom = channel.unary_stream(
+                '/ir.search.IR/QueryCustom',
                 request_serializer=data__pb2.QueryRequest.SerializeToString,
                 response_deserializer=data__pb2.ResultEntry.FromString,
                 )
@@ -40,6 +45,12 @@ class IRServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def QueryCustom(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ReadBook(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -57,6 +68,11 @@ def add_IRServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'QueryES': grpc.unary_stream_rpc_method_handler(
                     servicer.QueryES,
+                    request_deserializer=data__pb2.QueryRequest.FromString,
+                    response_serializer=data__pb2.ResultEntry.SerializeToString,
+            ),
+            'QueryCustom': grpc.unary_stream_rpc_method_handler(
+                    servicer.QueryCustom,
                     request_deserializer=data__pb2.QueryRequest.FromString,
                     response_serializer=data__pb2.ResultEntry.SerializeToString,
             ),
@@ -92,6 +108,23 @@ class IR(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/ir.search.IR/QueryES',
+            data__pb2.QueryRequest.SerializeToString,
+            data__pb2.ResultEntry.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def QueryCustom(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/ir.search.IR/QueryCustom',
             data__pb2.QueryRequest.SerializeToString,
             data__pb2.ResultEntry.FromString,
             options, channel_credentials,

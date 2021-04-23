@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 export const SearchResult = (props) => {
   const classes = useStyles();
   const [rating, setRating] = useState(null);
+  console.log(props.data);
 
   return (
     <Card className={`${classes.root} ${props.read ? classes.read : ''}`}>
@@ -28,6 +29,13 @@ export const SearchResult = (props) => {
             <h3 style={{ margin: '0' }}>{props.data['Name']}</h3>
             <p style={{ margin: '0 16px' }}>by {props.data['Authors']}</p>
           </div>
+
+          <div>
+            <h4 style={{ margin: '0' }}>Info</h4>
+            <p>Score: {props.score.toFixed(2)}</p>
+            <p>Language: {props.data['Language'] ? props.data['Language'] : 'unknown'}</p>
+          </div>
+
           <div>{props.data['Description']}</div>
         </div>
         <img src={`http://covers.openlibrary.org/b/ISBN/${props.data['ISBN']}-M.jpg`} />
