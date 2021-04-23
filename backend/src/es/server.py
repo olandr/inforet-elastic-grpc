@@ -25,11 +25,16 @@ class Server(data_pb2_grpc.IRServicer):
   
   def ReadBook(self, request, context):
     # FIXME: set db or similar to keep track of read docs.
-    return data_pb2.UserID(id=request.userID)
+    return data_pb2.User(id=request.user_ID, name="batman")
   
   def RateBook(self, request, context):
     # FIXME: set db or similar to keep track of rated docs.
-    return data_pb2.UserID(id=request.userID)
+    return data_pb2.User(id=request.user_ID, name="batman")
+
+  
+  def CreateUser(self, request, context):
+    # FIXME: set db or similar to keep track of rated docs.
+    return data_pb2.User(id=request.id, name=request.name)
 
 def serve_grpc(esc):
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web';
 
 const { IR } = require('./data_pb_service.js');
-const { QueryRequest, UsageData, ResultEntry } = require('./data_pb.js');
+const { QueryRequest, UsageData, User, ResultEntry } = require('./data_pb.js');
 
 // Simple example wrapper that will make a request to the gRPC backend.
 export const search = (queryString, cb) => {
@@ -64,6 +64,24 @@ export const setRateBook = (data) => {
   const call = grpc.unary(IR.RateBook, {
     host: 'http://localhost:8080',
     metadata: new grpc.Metadata({ Info: 'uID' }),
+    onEnd: (resp) => {
+      console.log("onEnd",resp);
+    },
+    request: req
+  });
+
+}
+
+
+
+// setRateBook will send a requst to the server and set the mapping userID, documentID -> rating
+export const createUser = (data) => {
+  var req = new User();
+  req.setId(data['id']);
+  req.setName(data['name']);
+  const call = grpc.unary(IR.RateBook, {
+    host: 'http://localhost:8080',
+    metadata: new grpc.Metadata({ Info: 'name' }),
     onEnd: (resp) => {
       console.log("onEnd",resp);
     },
