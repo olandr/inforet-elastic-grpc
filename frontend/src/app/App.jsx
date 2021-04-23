@@ -40,7 +40,7 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page-reload
     if (queryString !== '') {
-      search(queryString, customQuery, function (v) {
+      search(currentUser.id, queryString, customQuery, function (v) {
         setResults((prev) => [...prev, v]);
       });
     }
