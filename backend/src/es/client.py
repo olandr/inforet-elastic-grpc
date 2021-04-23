@@ -25,5 +25,5 @@ class Client:
     def raw_query(self, body):
         return self.es.search(index="goodreads", body=body)
 
-    def get(self, *kwargs):
-        return self.es.get(index="goodreads", *kwargs)
+    def get(self, doc_id):
+        return self.es.get(index="goodreads", id=doc_id)

@@ -55,8 +55,11 @@ LANGUAGE_LIST = [
 
 
 class Book:
-    def __init__(self, es_dict, topics_arr):
-        self.score = es_dict["_score"]
+    def __init__(self, es_dict, topics_arr, score=None):
+        if score == None:
+            self.score = es_dict["_score"]
+        else:
+            self.score = score
         self.name = es_dict["_source"]["Name"]
         self.language = es_dict["_source"]["Language"]
         self.topics = topics_arr
@@ -128,7 +131,7 @@ class User:
         self.update_language(book.language)
         self.update_interest(book.topics, multiplier=1)
 
-    def rate_book(self, book, grade):
+    def rate_book(self, book, grade=0):
         """
         Rating a book tells about your interests. It modifies the interests array of the user.
         """

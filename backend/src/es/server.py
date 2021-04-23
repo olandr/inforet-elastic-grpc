@@ -5,15 +5,15 @@ import grpc
 import random
 import numpy as np
 
-from es import data_pb2, data_pb2_grpc
-from rerank_algorithm.es_dictionaries_examples import book_3
+import data_pb2, data_pb2_grpc
 from rerank_algorithm.loader import book_topics_loader
-from rerank_algorithm.models import Book, User
+from rerank_algorithm.models import Book
 
 
 class Server(data_pb2_grpc.IRServicer):
-    def __init__(self, esc):
+    def __init__(self, esc, db):
         self.es_client = esc
+        self.db_client = db
 
         dir_path = os.path.dirname(os.path.realpath(__file__))
         lda_matrix_path = os.path.join(
@@ -22,14 +22,6 @@ class Server(data_pb2_grpc.IRServicer):
 
         # TO DO: Loading topic data the way is only a temporary solution. We should integrate them into ES.
         self.book_topics = book_topics_loader(lda_matrix_path)
-
-        # Here is an example of how to use the User API.
-        self.user = User(language_sensibility=10, interest_sensibility=1)
-        book_3_obj = Book(book_3, self.book_topics[int(book_3["_source"]["Id"])])
-        self.user.read_book(
-            book_3_obj
-        )
-        self.user.rate_book(book_3_obj, grade=0)
 
         print("--SERVER INITIALIZATION DONE-- ")
 
@@ -57,17 +49,15 @@ class Server(data_pb2_grpc.IRServicer):
         results = []
         for hit in res["hits"]["hits"]:
 
-            print("HIT", hit)
             book_id = int(hit["_source"]["Id"])
             book_topics_arr = (
                 self.book_topics[book_id]
                 if book_id in self.book_topics
                 else np.array([1 / 100 for _ in range(100)])
             )
-            book_data = self.user.get_book_updated_score(hit, book_topics_arr)
+            user = self.db_client.get_user_by_id(request.user_ID)
+            book_data = user['data'].get_book_updated_score(hit, book_topics_arr)
             results.append(book_data)
-            print("UPDATED HIT", book_data)
-            print()
 
         # Results are reranked with the new score.
         results_sorted = sorted(results, key=lambda k: k["_score"], reverse=True)
@@ -83,22 +73,34 @@ class Server(data_pb2_grpc.IRServicer):
             )
 
 
-  def ReadBook(self, request, context):
-    # FIXME: set db or similar to keep track of read docs.
-    return data_pb2.User(id=request.user_ID, name="batman")
+    def ReadBook(self, request, context):
+        print('action: read', request)
+        es_book = self.es_client.get(request.document_ID)
+        book = Book(es_book, self.book_topics[int(es_book["_source"]["Id"])], score=request.document_score)
+        user = self.db_client.get_user_by_id(request.user_ID)
+        print('prior reading: ', user['data'].get_personalized_score(book))
+        user['data'].read_book(book)
+        print('post reading: ', user['data'].get_personalized_score(book))
+        return data_pb2.User(id=request.user_ID)
   
-  def RateBook(self, request, context):
-    # FIXME: set db or similar to keep track of rated docs.
-    return data_pb2.User(id=request.user_ID, name="batman")
+    def RateBook(self, request, context):
+        print('action: rate', request)
+        es_book = self.es_client.get(request.document_ID)
+        book = Book(es_book, self.book_topics[int(es_book["_source"]["Id"])], score=request.document_score)
+        user = self.db_client.get_user_by_id(request.user_ID)
+        print('prior rating: ', user['data'].get_personalized_score(book))
+        user['data'].rate_book(book, grade=request.rating)
+        print('post rating: ', user['data'].get_personalized_score(book))
+        return data_pb2.User(id=request.user_ID)
 
   
-  def CreateUser(self, request, context):
-    # FIXME: set db or similar to keep track of rated docs.
-    return data_pb2.User(id=request.id, name=request.name)
+    def CreateUser(self, request, context):
+        userID = self.db_client.set_user(request.name)
+        return data_pb2.User(id=userID)
  
-def serve_grpc(esc):
+def serve_grpc(esc, db):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    data_pb2_grpc.add_IRServicer_to_server(Server(esc), server)
+    data_pb2_grpc.add_IRServicer_to_server(Server(esc, db), server)
     server.add_insecure_port("[::]:5678")
     server.start()
     server.wait_for_termination()
