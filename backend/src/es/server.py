@@ -1,5 +1,6 @@
 from google.protobuf.struct_pb2 import Struct
 from concurrent import futures
+import sys
 import os
 import grpc
 import random
@@ -23,7 +24,7 @@ class Server(data_pb2_grpc.IRServicer):
         # TO DO: Loading topic data the way is only a temporary solution. We should integrate them into ES.
         self.book_topics = book_topics_loader(lda_matrix_path)
 
-        print("--SERVER INITIALIZATION DONE-- ")
+        print("--SERVER INITIALIZATION DONE-- ", file=sys.stderr)
 
     def QueryES(self, request, context):
         res = self.es_client.raw_query(
@@ -31,7 +32,7 @@ class Server(data_pb2_grpc.IRServicer):
         )
 
         for hit in res["hits"]["hits"]:
-            print("HIT", hit)
+            print("HIT", hit, file=sys.stderr)
             data = Struct()
             data.update(hit["_source"])
             yield data_pb2.ResultEntry(
@@ -74,23 +75,39 @@ class Server(data_pb2_grpc.IRServicer):
 
 
     def ReadBook(self, request, context):
-        print('action: read', request)
+        print('action: read', request, file=sys.stderr)
         es_book = self.es_client.get(request.document_ID)
-        book = Book(es_book, self.book_topics[int(es_book["_source"]["Id"])], score=request.document_score)
+        # FIXME?: it seems like some books does not have any topics, is this a limitation or a bug?
+        try:
+            topics = self.book_topics[int(es_book["_source"]["Id"])]
+        except:
+            print("Topics does not exist for this book", file=sys.stderr)
+            return data_pb2.User(id=request.user_ID)
+
+        book = Book(es_book, topics, score=request.document_score)
         user = self.db_client.get_user_by_id(request.user_ID)
-        print('prior reading: ', user['data'].get_personalized_score(book))
+        print('prior reading: ', user['data'].get_personalized_score(book), file=sys.stderr)
         user['data'].read_book(book)
-        print('post reading: ', user['data'].get_personalized_score(book))
+        print('post reading: ', user['data'].get_personalized_score(book), file=sys.stderr)
         return data_pb2.User(id=request.user_ID)
   
     def RateBook(self, request, context):
-        print('action: rate', request)
+        print('action: rate', request, file=sys.stderr)
         es_book = self.es_client.get(request.document_ID)
-        book = Book(es_book, self.book_topics[int(es_book["_source"]["Id"])], score=request.document_score)
+        print(es_book, int(es_book["_source"]["Id"]), file=sys.stderr)
+        # FIXME?: it seems like some books does not have any topics, is this a limitation or a bug?
+        try:
+            topics = self.book_topics[int(es_book["_source"]["Id"])]
+        except:
+            print("Topics does not exist for this book", file=sys.stderr)
+            return data_pb2.User(id=request.user_ID)
+        
+        print("topics", topics, file=sys.stderr)
+        book = Book(es_book, topics, score=request.document_score)
         user = self.db_client.get_user_by_id(request.user_ID)
-        print('prior rating: ', user['data'].get_personalized_score(book))
+        print('prior rating: ', user['data'].get_personalized_score(book), file=sys.stderr)
         user['data'].rate_book(book, grade=request.rating)
-        print('post rating: ', user['data'].get_personalized_score(book))
+        print('post rating: ', user['data'].get_personalized_score(book), file=sys.stderr)
         return data_pb2.User(id=request.user_ID)
 
   
