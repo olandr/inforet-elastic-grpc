@@ -45,12 +45,12 @@ fi
 
 echo "Starting proxy"
 # Starts a reverse-proxy to serialise the client<->server requests. Requires go and grpcwebproxy.
-grpcwebproxy --backend_addr=localhost:5678 --run_tls_server=false --allow_all_origins > /dev/null 2>&1 &
+grpcwebproxy --backend_addr=localhost:5678 --run_tls_server=false --allow_all_origins --server_http_debug_port=8888 > /dev/null 2>&1 &
 proxy_server=$!
 
 echo "Starting server"
 # Starts the main backend server for grpc<->es requests
-python3 ./src/es/main.py > /dev/null 2>&1 &
+python3 ./src/main.py > /dev/null 2>&1 &
 grpc_server=$!
 wait $grpc_server
 echo "End"
