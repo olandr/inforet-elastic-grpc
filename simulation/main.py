@@ -19,10 +19,11 @@ from preprocess_text import transformText
 seed = 42
 np.random.seed(seed)
 
-df1 = pd.read_csv("archive/book600k-700k.csv")
-df2 = pd.read_csv("archive/book700k-800k.csv")
-df3 = pd.read_csv("archive/book800k-900k.csv")
-df4 = pd.read_csv("archive/book1000k-1100k.csv")
+df1 = pd.read_csv("../backend/data/book600k-700k.csv")
+df2 = pd.read_csv("../backend/data/book700k-800k.csv")
+df3 = pd.read_csv("../backend/data/book800k-900k.csv")
+df3 = pd.read_csv("../backend/data/book900k-1000k.csv")
+df4 = pd.read_csv("../backend/data/book1000k-1100k.csv")
 df = pd.concat([df1, df2, df3, df4])
 df = df[["Description", "Language", "Id"]]
 df = df.dropna()

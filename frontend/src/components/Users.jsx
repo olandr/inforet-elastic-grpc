@@ -16,13 +16,21 @@ const useStyles = makeStyles((theme) => ({
 export const Users = (props) => {
   const classes = useStyles();
   const [newUser, setNewUser] = useState(null);
-  const uv = ['olandr', 'lembeye', 'bosch', 'lindstrand'];
+  const [users, setUsers] = useState([]);
+
+  const handleNewUser = (id, name) => {
+    let user = {
+      id: id,
+      name: name,
+    };
+    setUsers((prev) => [...prev, user]);
+  };
 
   return (
     <>
       <div>
         <List>
-          {uv.map((e, i) => (
+          {users.map((e, i) => (
             <User key={i} data={e} handleClick={() => props.setCurrentUser(e)} />
           ))}
         </List>
@@ -33,7 +41,7 @@ export const Users = (props) => {
         >
           Create new user{' '}
         </Button>
-        {newUser && <UserForm />}
+        {newUser && <UserForm addToList={(name, id) => handleNewUser(name, id)} />}
       </div>
     </>
   );
@@ -42,22 +50,24 @@ export const Users = (props) => {
 const User = (props) => {
   return (
     <ListItem button onClick={props.handleClick}>
-      <ListItemText>{props.data}</ListItemText>
+      <ListItemText>{props.data.name}</ListItemText>
     </ListItem>
   );
 };
 
-const UserForm = () => {
+const UserForm = (props) => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page-reload
     if (name !== '') {
       console.log('new user:', name);
-      createUser({
-        id: 313,
-        name: name,
-      });
+      createUser(
+        {
+          name: name,
+        },
+        (id, n) => props.addToList(id, n)
+      );
     }
   };
 

@@ -3,6 +3,8 @@ __pycache__/
 /elasticsearch*
 .parcel-cache
 *.d.ts
+*.pkl
+simulation/model/*
 
 # Logs
 logs

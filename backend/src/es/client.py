@@ -24,3 +24,6 @@ class Client:
     # raw_query takes a full body and queries the index. Used as a help-func or for ad hoc querying using varied param settings.
     def raw_query(self, body):
         return self.es.search(index="goodreads", body=body)
+
+    def get(self, doc_id):
+        return self.es.get(index="goodreads", id=doc_id)

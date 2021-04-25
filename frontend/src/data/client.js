@@ -4,11 +4,12 @@ const { IR } = require('./data_pb_service.js');
 const { QueryRequest, UsageData, User, ResultEntry } = require('./data_pb.js');
 
 // Simple example wrapper that will make a request to the gRPC backend.
-export const search = (queryString, customQuery, cb) => {
+export const search = (userID, queryString, customQuery, cb) => {
   const queryType = customQuery ? IR.QueryCustom : IR.QueryES
   var stub = grpc.client(queryType, { host: 'http://localhost:8080' });
 
   var request = new QueryRequest();
+  request.setUserId(userID);
   request.setQuery(queryString);
 
   stub.start(new grpc.Metadata({ TestKey: 'cv1' }));
@@ -45,6 +46,8 @@ export const setReadBook = (data) => {
   req.setUserId(data['userID']);
   req.setDocumentId(data['documentID']);
   req.setIsRead(data['is_read']);
+  req.setDocumentScore(data['documentScore']);
+  console.log(req);
   const call = grpc.unary(IR.ReadBook, {
     host: 'http://localhost:8080',
     metadata: new grpc.Metadata({ Info: 'uID' }),
@@ -61,6 +64,8 @@ export const setRateBook = (data) => {
   req.setUserId(data['userID']);
   req.setDocumentId(data['documentID']);
   req.setRating(data['rating']);
+  req.setDocumentScore(data['documentScore']);
+  console.log(req);
   const call = grpc.unary(IR.RateBook, {
     host: 'http://localhost:8080',
     metadata: new grpc.Metadata({ Info: 'uID' }),
@@ -75,15 +80,15 @@ export const setRateBook = (data) => {
 
 
 // setRateBook will send a requst to the server and set the mapping userID, documentID -> rating
-export const createUser = (data) => {
+export const createUser = (data, callback) => {
   var req = new User();
-  req.setId(data['id']);
   req.setName(data['name']);
-  const call = grpc.unary(IR.RateBook, {
+  const call = grpc.unary(IR.CreateUser, {
     host: 'http://localhost:8080',
     metadata: new grpc.Metadata({ Info: 'name' }),
     onEnd: (resp) => {
-      console.log("onEnd",resp);
+      console.log("onEnd", resp);
+      callback(resp.message.getId(), data['name']);
     },
     request: req
   });

@@ -5,6 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Rating from '@material-ui/lab/Rating';
+import { setRateBook, setReadBook } from '../data/client';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +20,29 @@ const useStyles = makeStyles((theme) => ({
 export const SearchResult = (props) => {
   const classes = useStyles();
   const [rating, setRating] = useState(null);
-  console.log(props.data);
+
+  const handleRateBook = (r) => {
+    setRating(r);
+    let usageData = {
+      userID: props.currentUser,
+      documentID: props.id,
+      rating: r,
+      documentScore: props.score,
+    };
+    console.log('usageData', usageData);
+    setRateBook(usageData);
+  };
+
+  const handleReadBook = () => {
+    let usageData = {
+      userID: props.currentUser,
+      documentID: props.id,
+      is_read: true,
+      documentScore: props.score,
+    };
+    console.log('usageData', usageData);
+    setReadBook(usageData);
+  };
 
   return (
     <Card className={`${classes.root} ${props.read ? classes.read : ''}`}>
@@ -38,12 +61,15 @@ export const SearchResult = (props) => {
 
           <div>{props.data['Description']}</div>
         </div>
-        <img src={`http://covers.openlibrary.org/b/ISBN/${props.data['ISBN']}-M.jpg`} />
       </CardContent>
       <CardActions>
-        <Button size='small'>Read</Button>
-        <Rating name={props.data['Id']} value={rating} onChange={(_, r) => setRating(r)} />
+        <Button size='small' onClick={() => handleReadBook()}>
+          Read
+        </Button>
+        <Rating name={props.id} value={rating} onChange={(_, r) => handleRateBook(r)} />
       </CardActions>
     </Card>
   );
 };
+// FIXME: removing this temporarily to keep under any potential quota limits
+//<img src={`http://covers.openlibrary.org/b/ISBN/${props.data['ISBN']}-M.jpg`} />
