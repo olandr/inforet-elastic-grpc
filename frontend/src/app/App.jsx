@@ -73,9 +73,17 @@ const App = () => {
         </form>
         <ul>
           {results?.map((obj, i) => {
+            console.log('obj', obj);
             return (
               <div key={i}>
-                <SearchResult currentUser={currentUser.id} id={obj.id} data={obj.dataMap} score={obj.score} />
+                <SearchResult
+                  currentUser={currentUser.id}
+                  id={obj.id}
+                  data={obj.dataMap}
+                  score={obj.score}
+                  is_read={obj.isRead}
+                  rating={obj.rating}
+                />
               </div>
             );
           })}

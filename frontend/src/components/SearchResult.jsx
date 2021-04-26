@@ -19,10 +19,9 @@ const useStyles = makeStyles((theme) => ({
 
 export const SearchResult = (props) => {
   const classes = useStyles();
-  const [rating, setRating] = useState(null);
-
+  const [rating, setRating] = useState(props.rating);
+  const [read, setRead] = useState(props.is_read);
   const handleRateBook = (r) => {
-    setRating(r);
     let usageData = {
       userID: props.currentUser,
       documentID: props.id,
@@ -31,6 +30,7 @@ export const SearchResult = (props) => {
     };
     console.log('usageData', usageData);
     setRateBook(usageData);
+    setRating(r);
   };
 
   const handleReadBook = () => {
@@ -42,6 +42,7 @@ export const SearchResult = (props) => {
     };
     console.log('usageData', usageData);
     setReadBook(usageData);
+    setRead(true);
   };
 
   return (
@@ -63,7 +64,7 @@ export const SearchResult = (props) => {
         </div>
       </CardContent>
       <CardActions>
-        <Button size='small' onClick={() => handleReadBook()}>
+        <Button variant='contained' size='small' onClick={() => handleReadBook()} disabled={read}>
           Read
         </Button>
         <Rating name={props.id} value={rating} onChange={(_, r) => handleRateBook(r)} />

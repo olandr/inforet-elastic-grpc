@@ -27,7 +27,8 @@ message ResultEntry {
   string id = 1;
   double score = 2;
   bool is_read = 3;
-  map<string, string> data = 4;
+  int64 rating = 4;
+  map<string, string> data = 5;
 }
 
 message UsageData {
