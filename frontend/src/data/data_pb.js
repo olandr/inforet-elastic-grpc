@@ -421,6 +421,7 @@ proto.ir.search.ResultEntry.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     score: jspb.Message.getFloatingPointFieldWithDefault(msg, 2, 0.0),
     isRead: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    rating: jspb.Message.getFieldWithDefault(msg, 4, 0),
     dataMap: (f = msg.getDataMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
@@ -471,6 +472,10 @@ proto.ir.search.ResultEntry.deserializeBinaryFromReader = function(msg, reader) 
       msg.setIsRead(value);
       break;
     case 4:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setRating(value);
+      break;
+    case 5:
       var value = msg.getDataMap();
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
@@ -526,9 +531,16 @@ proto.ir.search.ResultEntry.serializeBinaryToWriter = function(message, writer) 
       f
     );
   }
+  f = message.getRating();
+  if (f !== 0) {
+    writer.writeInt64(
+      4,
+      f
+    );
+  }
   f = message.getDataMap(true);
   if (f && f.getLength() > 0) {
-    f.serializeBinary(4, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+    f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
 };
 
@@ -588,14 +600,32 @@ proto.ir.search.ResultEntry.prototype.setIsRead = function(value) {
 
 
 /**
- * map<string, string> data = 4;
+ * optional int64 rating = 4;
+ * @return {number}
+ */
+proto.ir.search.ResultEntry.prototype.getRating = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.ir.search.ResultEntry} returns this
+ */
+proto.ir.search.ResultEntry.prototype.setRating = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * map<string, string> data = 5;
  * @param {boolean=} opt_noLazyCreate Do not create the map if
  * empty, instead returning `undefined`
  * @return {!jspb.Map<string,string>}
  */
 proto.ir.search.ResultEntry.prototype.getDataMap = function(opt_noLazyCreate) {
   return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 4, opt_noLazyCreate,
+      jspb.Message.getMapField(this, 5, opt_noLazyCreate,
       null));
 };
 
