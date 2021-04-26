@@ -105,7 +105,6 @@ export const autoCreateUser = (callback) => {
   });
   stub.onMessage((message) => {
     let ob = message.toObject();
-    ob.dataMap = dataMapToObject(ob.dataMap);
     callback(ob);
     console.log('onMessage', ob);
   });

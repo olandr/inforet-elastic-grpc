@@ -119,13 +119,10 @@ class Server(data_pb2_grpc.IRServicer):
     def AutoCreateUser(self, request, context):
         print("action: autocreateuser")
         for user in self.db_client.DEFAULT_USERS:
-            print("\tuser:", user)
             userID = self.db_client.set_user(user['name'])
-            pb2user = data_pb2.User(id=userID)
+            pb2user = data_pb2.User(id=userID, name=user['name'])
             for read_book_ISBN in user['read_books']:
-                print('\tquery', {'query': {'match': read_book_ISBN}})
                 doc = self.es_client.raw_query(body={"query": {"query_string": {"query": read_book_ISBN}}})['hits']['hits'][0]
-                print('\tdoc', doc)
                 req = data_pb2.UsageData(
                     user_ID=userID,
                     document_ID = doc['_id'],
@@ -134,7 +131,7 @@ class Server(data_pb2_grpc.IRServicer):
                 )
                 self.ReadBook(req, None)
             for rated_book_ISBN in user['rated_books']:
-                doc = self.es_client.raw_query(body={"query": {"query_string": {"query": rated_book_ISBN}}})
+                doc = self.es_client.raw_query(body={"query": {"query_string": {"query": rated_book_ISBN}}})['hits']['hits'][0]
                 req = data_pb2.UsageData(
                     user_ID=userID,
                     document_ID = doc['_id'],
