@@ -19,6 +19,11 @@ class IRStub(object):
                 request_serializer=data__pb2.User.SerializeToString,
                 response_deserializer=data__pb2.User.FromString,
                 )
+        self.AutoCreateUser = channel.unary_stream(
+                '/ir.search.IR/AutoCreateUser',
+                request_serializer=data__pb2.Empty.SerializeToString,
+                response_deserializer=data__pb2.User.FromString,
+                )
         self.QueryES = channel.unary_stream(
                 '/ir.search.IR/QueryES',
                 request_serializer=data__pb2.QueryRequest.SerializeToString,
@@ -45,6 +50,12 @@ class IRServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def CreateUser(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AutoCreateUser(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -80,6 +91,11 @@ def add_IRServicer_to_server(servicer, server):
             'CreateUser': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateUser,
                     request_deserializer=data__pb2.User.FromString,
+                    response_serializer=data__pb2.User.SerializeToString,
+            ),
+            'AutoCreateUser': grpc.unary_stream_rpc_method_handler(
+                    servicer.AutoCreateUser,
+                    request_deserializer=data__pb2.Empty.FromString,
                     response_serializer=data__pb2.User.SerializeToString,
             ),
             'QueryES': grpc.unary_stream_rpc_method_handler(
@@ -125,6 +141,23 @@ class IR(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ir.search.IR/CreateUser',
             data__pb2.User.SerializeToString,
+            data__pb2.User.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AutoCreateUser(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/ir.search.IR/AutoCreateUser',
+            data__pb2.Empty.SerializeToString,
             data__pb2.User.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
