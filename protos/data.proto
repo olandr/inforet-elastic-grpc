@@ -6,10 +6,15 @@ package ir.search;
 
 service IR {
   rpc CreateUser(User) returns (User);
+  rpc AutoCreateUser(Empty) returns (stream User);
   rpc QueryES(QueryRequest) returns (stream ResultEntry);
   rpc QueryCustom(QueryRequest) returns (stream ResultEntry);
   rpc ReadBook(UsageData) returns (User);
   rpc RateBook(UsageData) returns (User);
+}
+
+message Empty {
+  // Simply an empty payload
 }
 
 message QueryRequest{
