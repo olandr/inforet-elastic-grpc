@@ -70,10 +70,12 @@ class Server(data_pb2_grpc.IRServicer):
                 user_has_read = hit["_id"] in user['read_books']
             except:
                 pass
-            try:
-                user_rating = user['rated_books'][hit["_id"]]
-            except:
-                pass
+            for rated in user['rated_books']:
+                try:
+                    user_rating = rated[hit["_id"]]
+                    break
+                except:
+                    pass
             data = Struct()
             data.update(hit["_source"])
             yield data_pb2.ResultEntry(
@@ -114,7 +116,6 @@ class Server(data_pb2_grpc.IRServicer):
             print("Topics does not exist for this book", file=sys.stderr)
             return data_pb2.User(id=request.user_ID)
         
-        print("topics", topics, file=sys.stderr)
         book = Book(es_book, topics, score=request.document_score)
         user = self.db_client.get_user_by_id(request.user_ID)
         print('prior rating: ', user['data'].get_personalized_score(book), file=sys.stderr)
