@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { createUser } from '../data/client.js';
+import { createUser, autoCreateUser } from '../data/client.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +17,13 @@ export const Users = (props) => {
   const classes = useStyles();
   const [newUser, setNewUser] = useState(null);
   const [users, setUsers] = useState([]);
+
+  const handleAutoSignup = () => {
+    setUsers([]);
+    autoCreateUser(function (v) {
+      setUsers((prev) => [...prev, v]);
+    });
+  };
 
   const handleNewUser = (id, name) => {
     let user = {
@@ -40,6 +47,10 @@ export const Users = (props) => {
           onClick={() => setNewUser(true)}
         >
           Create new user{' '}
+        </Button>
+
+        <Button variant='outlined' style={{ color: '#FFF', backgroundColor: '#DB4437' }} onClick={handleAutoSignup}>
+          Auto create users{' '}
         </Button>
         {newUser && <UserForm addToList={(name, id) => handleNewUser(name, id)} />}
       </div>

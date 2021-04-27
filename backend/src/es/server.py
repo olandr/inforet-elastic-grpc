@@ -39,6 +39,7 @@ class Server(data_pb2_grpc.IRServicer):
                 id=hit["_id"],
                 score=hit["_score"],
                 is_read=(random.random() < 0.5),
+                rating = 0,
                 data=data,
             )
 
@@ -47,16 +48,15 @@ class Server(data_pb2_grpc.IRServicer):
             body={"query": {"query_string": {"query": request.query}}}
         )
 
+        user = self.db_client.get_user_by_id(request.user_ID)
         results = []
         for hit in res["hits"]["hits"]:
-
             book_id = int(hit["_source"]["Id"])
             book_topics_arr = (
                 self.book_topics[book_id]
                 if book_id in self.book_topics
                 else np.array([1 / 100 for _ in range(100)])
             )
-            user = self.db_client.get_user_by_id(request.user_ID)
             book_data = user['data'].get_book_updated_score(hit, book_topics_arr)
             results.append(book_data)
 
@@ -64,12 +64,25 @@ class Server(data_pb2_grpc.IRServicer):
         results_sorted = sorted(results, key=lambda k: k["_score"], reverse=True)
 
         for hit in results_sorted:
+            user_has_read = False
+            user_rating = 0
+            try:
+                user_has_read = hit["_id"] in user['read_books']
+            except:
+                pass
+            for rated in user['rated_books']:
+                try:
+                    user_rating = rated[hit["_id"]]
+                    break
+                except:
+                    pass
             data = Struct()
             data.update(hit["_source"])
             yield data_pb2.ResultEntry(
                 id=hit["_id"],
                 score=hit["_score"],
-                is_read=(random.random() < 0.5),
+                is_read=user_has_read,
+                rating=user_rating,
                 data=data,
             )
 
@@ -88,6 +101,7 @@ class Server(data_pb2_grpc.IRServicer):
         user = self.db_client.get_user_by_id(request.user_ID)
         print('prior reading: ', user['data'].get_personalized_score(book), file=sys.stderr)
         user['data'].read_book(book)
+        user['read_books'].append(es_book['_id'])
         print('post reading: ', user['data'].get_personalized_score(book), file=sys.stderr)
         return data_pb2.User(id=request.user_ID)
   
@@ -102,11 +116,11 @@ class Server(data_pb2_grpc.IRServicer):
             print("Topics does not exist for this book", file=sys.stderr)
             return data_pb2.User(id=request.user_ID)
         
-        print("topics", topics, file=sys.stderr)
         book = Book(es_book, topics, score=request.document_score)
         user = self.db_client.get_user_by_id(request.user_ID)
         print('prior rating: ', user['data'].get_personalized_score(book), file=sys.stderr)
         user['data'].rate_book(book, grade=request.rating)
+        user['rated_books'].append({es_book['_id']: request.rating})
         print('post rating: ', user['data'].get_personalized_score(book), file=sys.stderr)
         return data_pb2.User(id=request.user_ID)
 
@@ -115,6 +129,33 @@ class Server(data_pb2_grpc.IRServicer):
         userID = self.db_client.set_user(request.name)
         return data_pb2.User(id=userID)
  
+
+    def AutoCreateUser(self, request, context):
+        print("action: autocreateuser")
+        for user in self.db_client.DEFAULT_USERS:
+            userID = self.db_client.set_user(user['name'])
+            pb2user = data_pb2.User(id=userID, name=user['name'])
+            for read_book_ISBN in user['read_books']:
+                doc = self.es_client.raw_query(body={"query": {"query_string": {"query": read_book_ISBN}}})['hits']['hits'][0]
+                req = data_pb2.UsageData(
+                    user_ID=userID,
+                    document_ID = doc['_id'],
+                    is_read = True,
+                    document_score = doc['_score']
+                )
+                self.ReadBook(req, None)
+            for rated_book_ISBN in user['rated_books']:
+                doc = self.es_client.raw_query(body={"query": {"query_string": {"query": rated_book_ISBN}}})['hits']['hits'][0]
+                req = data_pb2.UsageData(
+                    user_ID=userID,
+                    document_ID = doc['_id'],
+                    is_read = True,
+                    document_score = doc['_score']
+                )
+                self.RateBook(req, None)
+            yield pb2user
+
+
 def serve_grpc(esc, db):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     data_pb2_grpc.add_IRServicer_to_server(Server(esc, db), server)

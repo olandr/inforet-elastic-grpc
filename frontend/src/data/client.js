@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web';
 
 const { IR } = require('./data_pb_service.js');
-const { QueryRequest, UsageData, User, ResultEntry } = require('./data_pb.js');
+const { QueryRequest, UsageData, User, ResultEntry, Empty } = require('./data_pb.js');
 
 // Simple example wrapper that will make a request to the gRPC backend.
 export const search = (userID, queryString, customQuery, cb) => {
@@ -93,4 +93,23 @@ export const createUser = (data, callback) => {
     request: req
   });
 
+}
+
+
+export const autoCreateUser = (callback) => {
+  var stub = grpc.client(IR.AutoCreateUser, { host: 'http://localhost:8080' });
+  stub.start(new grpc.Metadata({ Info: 'autoCreate' }));
+  stub.send(new Empty());
+  stub.onHeaders((headers) => {
+    console.log('onHeaders', headers);
+  });
+  stub.onMessage((message) => {
+    let ob = message.toObject();
+    callback(ob);
+    console.log('onMessage', ob);
+  });
+  stub.onEnd((status, statusMessage, trailers) => {
+    console.log('onEnd', status, statusMessage, trailers);
+  });
+  stub.finishSend();
 }
