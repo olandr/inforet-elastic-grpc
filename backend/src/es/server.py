@@ -31,6 +31,8 @@ class Server(data_pb2_grpc.IRServicer):
             body={"query": {"query_string": {"query": request.query}}}
         )
 
+        self.es_client.write_query(request.user_ID, request.query, int(res['hits']['total']['value']))
+
         for hit in res["hits"]["hits"]:
             print("HIT", hit, file=sys.stderr)
             data = Struct()
@@ -53,7 +55,9 @@ class Server(data_pb2_grpc.IRServicer):
             }
         )
 
+        self.es_client.write_query(request.user_ID, request.query, int(res['hits']['total']['value']))
         user = self.db_client.get_user_by_id(request.user_ID)
+
         results = []
         for hit in res["hits"]["hits"]:
             book_id = int(hit["_source"]["Id"])
@@ -94,6 +98,9 @@ class Server(data_pb2_grpc.IRServicer):
     def ReadBook(self, request, context):
         print("action: read", request, file=sys.stderr)
         es_book = self.es_client.get(request.document_ID)
+
+        self.es_client.write_click(request.user_ID, es_book["_source"]["Id"], es_book["_source"]["Name"],
+                                   float(request.document_score), es_book["_source"]["Authors"], es_book["_source"]["Language"])
         # FIXME?: it seems like some books does not have any topics, is this a limitation or a bug?
         try:
             topics = self.book_topics[int(es_book["_source"]["Id"])]
@@ -118,6 +125,10 @@ class Server(data_pb2_grpc.IRServicer):
     def RateBook(self, request, context):
         print("action: rate", request, file=sys.stderr)
         es_book = self.es_client.get(request.document_ID)
+
+        self.es_client.write_rating(request.user_ID, es_book["_source"]["Id"], es_book["_source"]["Name"], float(request.rating),
+                                    float(request.document_score), es_book["_source"]["Authors"], es_book["_source"]["Language"])
+
         print(es_book, int(es_book["_source"]["Id"]), file=sys.stderr)
         # FIXME?: it seems like some books does not have any topics, is this a limitation or a bug?
         try:
