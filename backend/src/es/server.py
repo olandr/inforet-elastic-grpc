@@ -39,13 +39,18 @@ class Server(data_pb2_grpc.IRServicer):
                 id=hit["_id"],
                 score=hit["_score"],
                 is_read=(random.random() < 0.5),
-                rating = 0,
+                rating=0,
                 data=data,
             )
 
     def QueryCustom(self, request, context):
         res = self.es_client.raw_query(
-            body={"query": {"query_string": {"query": request.query}}}
+            body={
+                "query": {
+                    "rank_feature": {"field": "avg_grade"},
+                    "query_string": {"query": request.query},
+                }
+            }
         )
 
         user = self.db_client.get_user_by_id(request.user_ID)
@@ -57,7 +62,7 @@ class Server(data_pb2_grpc.IRServicer):
                 if book_id in self.book_topics
                 else np.array([1 / 100 for _ in range(100)])
             )
-            book_data = user['data'].get_book_updated_score(hit, book_topics_arr)
+            book_data = user["data"].get_book_updated_score(hit, book_topics_arr)
             results.append(book_data)
 
         # Results are reranked with the new score.
@@ -67,10 +72,10 @@ class Server(data_pb2_grpc.IRServicer):
             user_has_read = False
             user_rating = 0
             try:
-                user_has_read = hit["_id"] in user['read_books']
+                user_has_read = hit["_id"] in user["read_books"]
             except:
                 pass
-            for rated in user['rated_books']:
+            for rated in user["rated_books"]:
                 try:
                     user_rating = rated[hit["_id"]]
                     break
@@ -86,9 +91,8 @@ class Server(data_pb2_grpc.IRServicer):
                 data=data,
             )
 
-
     def ReadBook(self, request, context):
-        print('action: read', request, file=sys.stderr)
+        print("action: read", request, file=sys.stderr)
         es_book = self.es_client.get(request.document_ID)
         # FIXME?: it seems like some books does not have any topics, is this a limitation or a bug?
         try:
@@ -99,14 +103,20 @@ class Server(data_pb2_grpc.IRServicer):
 
         book = Book(es_book, topics, score=request.document_score)
         user = self.db_client.get_user_by_id(request.user_ID)
-        print('prior reading: ', user['data'].get_personalized_score(book), file=sys.stderr)
-        user['data'].read_book(book)
-        user['read_books'].append(es_book['_id'])
-        print('post reading: ', user['data'].get_personalized_score(book), file=sys.stderr)
+        print(
+            "prior reading: ",
+            user["data"].get_personalized_score(book),
+            file=sys.stderr,
+        )
+        user["data"].read_book(book)
+        user["read_books"].append(es_book["_id"])
+        print(
+            "post reading: ", user["data"].get_personalized_score(book), file=sys.stderr
+        )
         return data_pb2.User(id=request.user_ID)
-  
+
     def RateBook(self, request, context):
-        print('action: rate', request, file=sys.stderr)
+        print("action: rate", request, file=sys.stderr)
         es_book = self.es_client.get(request.document_ID)
         print(es_book, int(es_book["_source"]["Id"]), file=sys.stderr)
         # FIXME?: it seems like some books does not have any topics, is this a limitation or a bug?
@@ -115,42 +125,48 @@ class Server(data_pb2_grpc.IRServicer):
         except:
             print("Topics does not exist for this book", file=sys.stderr)
             return data_pb2.User(id=request.user_ID)
-        
+
         book = Book(es_book, topics, score=request.document_score)
         user = self.db_client.get_user_by_id(request.user_ID)
-        print('prior rating: ', user['data'].get_personalized_score(book), file=sys.stderr)
-        user['data'].rate_book(book, grade=request.rating)
-        user['rated_books'].append({es_book['_id']: request.rating})
-        print('post rating: ', user['data'].get_personalized_score(book), file=sys.stderr)
+        print(
+            "prior rating: ", user["data"].get_personalized_score(book), file=sys.stderr
+        )
+        user["data"].rate_book(book, grade=request.rating)
+        user["rated_books"].append({es_book["_id"]: request.rating})
+        print(
+            "post rating: ", user["data"].get_personalized_score(book), file=sys.stderr
+        )
         return data_pb2.User(id=request.user_ID)
 
-  
     def CreateUser(self, request, context):
         userID = self.db_client.set_user(request.name)
         return data_pb2.User(id=userID)
- 
 
     def AutoCreateUser(self, request, context):
         print("action: autocreateuser")
         for user in self.db_client.DEFAULT_USERS:
-            userID = self.db_client.set_user(user['name'])
-            pb2user = data_pb2.User(id=userID, name=user['name'])
-            for read_book_ISBN in user['read_books']:
-                doc = self.es_client.raw_query(body={"query": {"query_string": {"query": read_book_ISBN}}})['hits']['hits'][0]
+            userID = self.db_client.set_user(user["name"])
+            pb2user = data_pb2.User(id=userID, name=user["name"])
+            for read_book_ISBN in user["read_books"]:
+                doc = self.es_client.raw_query(
+                    body={"query": {"query_string": {"query": read_book_ISBN}}}
+                )["hits"]["hits"][0]
                 req = data_pb2.UsageData(
                     user_ID=userID,
-                    document_ID = doc['_id'],
-                    is_read = True,
-                    document_score = doc['_score']
+                    document_ID=doc["_id"],
+                    is_read=True,
+                    document_score=doc["_score"],
                 )
                 self.ReadBook(req, None)
-            for rated_book_ISBN in user['rated_books']:
-                doc = self.es_client.raw_query(body={"query": {"query_string": {"query": rated_book_ISBN}}})['hits']['hits'][0]
+            for rated_book_ISBN in user["rated_books"]:
+                doc = self.es_client.raw_query(
+                    body={"query": {"query_string": {"query": rated_book_ISBN}}}
+                )["hits"]["hits"][0]
                 req = data_pb2.UsageData(
                     user_ID=userID,
-                    document_ID = doc['_id'],
-                    is_read = True,
-                    document_score = doc['_score']
+                    document_ID=doc["_id"],
+                    is_read=True,
+                    document_score=doc["_score"],
                 )
                 self.RateBook(req, None)
             yield pb2user

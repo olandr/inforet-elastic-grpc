@@ -3,7 +3,7 @@ import csv
 import sys
 from elasticsearch import helpers, Elasticsearch, TransportError
 
-DATADIR = "../../data/"
+DATADIR = "../data/"
 INDEX_NAME = "goodreads"
 
 
@@ -19,7 +19,16 @@ class Engine:
         print("--INDEXING STARTING (%s)--" % INDEX_NAME, file=sys.stderr)
         self.es = Elasticsearch()
         if not self.es.indices.exists(index=INDEX_NAME):
-            self.es.indices.create(index=INDEX_NAME)
+            settings = {
+                "mappings": {
+                    "properties": {
+                        "pagerank": {
+                            "type": "avg_grade"
+                        },
+                    }
+                }
+            }
+            self.es.indices.create(index=INDEX_NAME, body=settings)
             print("Index does not exists......will index data", file=sys.stderr)
             self.index()
         else:

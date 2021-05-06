@@ -26,6 +26,6 @@ if __name__ == "__main__":
         if "nb_of_grades" not in df:
             df["nb_of_grades"] = nb_of_grades_list
 
-        df.to_csv(fn)
+        df.to_csv(fn ,index=False)
 
         print("...done:", fn, file=sys.stderr)
