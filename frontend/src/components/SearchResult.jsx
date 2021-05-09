@@ -52,6 +52,7 @@ export const SearchResult = (props) => {
           <div style={{ display: 'flex' }}>
             <h3 style={{ margin: '0' }}>{props.data['Name']}</h3>
             <p style={{ margin: '0 16px' }}>by {props.data['Authors']}</p>
+            <p style={{ margin: '0 16px' }}>No:{props.pos}</p>
           </div>
 
           <div>

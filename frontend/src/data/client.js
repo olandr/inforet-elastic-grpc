@@ -11,7 +11,7 @@ export const search = (userID, queryString, customQuery, cb) => {
   var request = new QueryRequest();
   request.setUserId(userID);
   request.setQuery(queryString);
-
+  let results = [];
   stub.start(new grpc.Metadata({ TestKey: 'cv1' }));
   stub.send(request);
   stub.onHeaders((headers) => {
@@ -20,11 +20,11 @@ export const search = (userID, queryString, customQuery, cb) => {
   stub.onMessage((message) => {
     let ob = message.toObject();
     ob.dataMap = dataMapToObject(ob.dataMap);
-    cb(ob);
-    console.log('onMessage', ob);
+    results = [...results, ob];
   });
   stub.onEnd((status, statusMessage, trailers) => {
     console.log('onEnd', status, statusMessage, trailers);
+    cb(results);
   });
   stub.finishSend();
 };
