@@ -1,3 +1,4 @@
+from scipy import spatial
 import numpy as np
 
 LANGUAGE_LIST = [
@@ -74,9 +75,9 @@ class User:
         name="",
         interest_size=100,
         language_learning_rate=0.1,
-        language_sensibility=1,
+        language_sensibility=3,
         interest_learning_rate=0.1,
-        interest_sensibility=1,
+        interest_sensibility=3,
     ):
         """
         :param interest_size: size of the interests array = nb of topics of the LDA.
@@ -87,9 +88,10 @@ class User:
         """
         self.name = name
         self.num_languages = len(LANGUAGE_LIST)
-        self.languages = {}
+        self.languages = np.ones(len(LANGUAGE_LIST))/len(LANGUAGE_LIST)
+        self.lang_to_idx = {}
         for language in LANGUAGE_LIST:
-            self.languages[language] = 1 / self.num_languages
+            self.lang_to_idx[language] = len(self.lang_to_idx)
         self.language_learning_rate = language_learning_rate
         self.language_sensibility = language_sensibility
 
@@ -101,14 +103,12 @@ class User:
         self.interest_sensibility = interest_sensibility
 
     def update_language(self, language):
-
-        for l, v in self.languages.items():
-            if l == language:
-                self.languages[l] += self.language_learning_rate
-            else:
-                self.languages[l] -= self.language_learning_rate / (
-                    self.num_languages - 1
-                )
+        norm = 0
+        update_vector = np.ones(len(self.languages))*-self.language_learning_rate
+        update_vector[self.lang_to_idx[language]] *= -1
+        self.languages += update_vector
+        self.languages = self.languages.clip(min=0)
+        self.languages /= np.sum(self.languages)
 
     def get_name(self):
         return self.name
@@ -117,11 +117,10 @@ class User:
         alpha = multiplier * self.interest_learning_rate
         self.interests += alpha * topics
         self.interests = self.interests.clip(min=0)
-        norm = np.linalg.norm(self.interests)
-        self.interests /= norm
+        self.interests /= np.sum(self.interests)
 
     def get_interest_score(self, book):
-        return np.dot(self.interests, book.topics)
+        return 1-spatial.distance.cosine(self.interests, book)
 
     def read_book(self, book):
         """
@@ -140,8 +139,8 @@ class User:
 
     def get_personalized_score(self, book):
         return self.language_sensibility * self.languages[
-            book.language
-        ] + self.interest_sensibility * self.get_interest_score(book)
+            self.lang_to_idx[book.language]
+        ] + self.interest_sensibility * self.get_interest_score(book.topics)
 
     def get_book_updated_score(self, book_es_dict, topics_arr):
         book = Book(book_es_dict, topics_arr)
