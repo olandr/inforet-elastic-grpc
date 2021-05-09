@@ -42,7 +42,7 @@ const App = () => {
     setResults([]);
     if (queryString !== '') {
       search(currentUser.id, queryString, customQuery, function (v) {
-        setResults((prev) => [...prev, v]);
+        setResults(v);
       });
     }
   };
@@ -59,7 +59,10 @@ const App = () => {
           <TextField
             id='query'
             label='Search...'
-            onChange={(e) => setQueryString(e.target.value)}
+            onChange={(e) => {
+              setResults([]);
+              setQueryString(e.target.value);
+            }}
             style={{ width: '100%', paddingRight: '8px' }}
           ></TextField>
           <Button
@@ -73,7 +76,6 @@ const App = () => {
         </form>
         <ul>
           {results?.map((obj, i) => {
-            console.log('obj', obj);
             return (
               <div key={i}>
                 <SearchResult
@@ -83,6 +85,7 @@ const App = () => {
                   score={obj.score}
                   is_read={obj.isRead}
                   rating={obj.rating}
+                  pos={i}
                 />
               </div>
             );

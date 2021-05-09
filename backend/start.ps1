@@ -48,7 +48,7 @@ if ($code -eq "") {
 
 echo "Starting proxy"
 # Starts a reverse-proxy to serialise the client<->server requests. Requires go and grpcwebproxy.
-Start-Job -Name "proxy_server" -ScriptBlock { grpcwebproxy --backend_addr=localhost:5678 --run_tls_server=false --allow_all_origins }
+Start-Job -Name "proxy_server" -ScriptBlock { grpcwebproxy --backend_addr=localhost:5678 --run_tls_server=false --allow_all_origins --server_http_max_write_timeout=30s --server_http_max_read_timeout=30s }
 
 echo "Starting server"
 # Starts the main backend server for grpc<->es requests
