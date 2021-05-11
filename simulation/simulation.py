@@ -28,14 +28,14 @@ rating_distribution = []
 
 for i in range(num_simulated_users):
     print(i, end="\r")
-    s = SimulatedUser(num_topics, len(c), priors, k=3)
+    s = SimulatedUser(num_topics, len(c), priors, lang_to_idx, k=3)
     # clicks: set of book ids, ratings: {book_id: rating}
-    clicks, ratings = s.click_and_rate_books(ids, mat, langs, lang_to_idx, possible_books=1000)
+    clicks, ratings = s.click_and_rate_books(ids, mat, langs, possible_books=1000)
     rating_distribution.extend(list(ratings.values()))
     simulated_users.append(s)
 import matplotlib.pyplot as plt
 plt.hist(rating_distribution)
 plt.show()
 
-with open("user_save1K.pkl", "wb") as f:
+with open("user_save.pkl", "wb") as f:
     pickle.dump(simulated_users, f)

@@ -4,13 +4,14 @@ import heapq
 
 
 class SimulatedUser:
-    def __init__(self, num_topics, num_languages, language_priors, k=3):
+    def __init__(self, num_topics, num_languages, language_priors, lang_to_idx, k=3):
         self.num_topics = num_topics
         self.num_languages = num_languages
         self.interests = self.generate_interests(num_topics, main_interests=k)
         self.language = self.generate_language(num_languages, language_priors)
         self.clicks = set()
         self.ratings = {}
+        self.lang_to_idx = lang_to_idx
 
     def generate_interests(self, num_topics, main_interests=3):
         interests = np.zeros(num_topics)
@@ -36,7 +37,6 @@ class SimulatedUser:
         ids,
         vectors,
         languages,
-        lang_to_idx,
         possible_books=1000,
         rating_probability=1.0,
     ):
@@ -50,8 +50,8 @@ class SimulatedUser:
             # if the user does not speak the language, this will be 0
             distance = 1-spatial.distance.cosine(self.interests, vector)  # cosine similarity
             distances.append(distance)
-            distance *= self.language[lang_to_idx[language]]
-            distance += np.random.uniform(-0.05, 0.05)  # just mess things up a bit
+            distance += self.language[self.lang_to_idx[language]]
+            distance += np.random.uniform(-0.1, 0.1)  # just mess things up a bit
             if len(heap) < k or distance > heap[0][0]:
                 if len(heap) == k:
                     heapq.heappop(heap)
@@ -94,7 +94,7 @@ class SimulatedUser:
 
         return clicked_books, ratings
 
-    def compute_similarity_score(self, indices, vectors, languages, lang_to_idx):
+    def compute_similarity_score(self, indices, vectors, languages):
         distances = []
         heap = []
 
@@ -102,7 +102,7 @@ class SimulatedUser:
 
         for idx in indices:
             old_distance = 1 - spatial.distance.cosine(self.interests, vectors[idx])  # cosine similarity
-            distance = old_distance + self.language[lang_to_idx[languages[idx]]]  # maybe remove?
+            distance = old_distance + self.language[self.lang_to_idx[languages[idx]]]  # maybe remove?
             distances.append(distance)
 
         mean_dist = np.mean(distances)
@@ -110,18 +110,16 @@ class SimulatedUser:
 
 class ApproximateUser:
     def __init__(self, true_user, num_topics, LANGUAGE_LIST,
-            language_learning_rate=0.02,
+            language_learning_rate=0.05,
             language_sensibility=1,
-            interest_learning_rate=0.02,
+            interest_learning_rate=0.1,
             interest_sensibility=1):
 
         self.user = true_user
         self.num_topics = num_topics
         self.num_languages = len(LANGUAGE_LIST)
         self.languages = np.ones(len(LANGUAGE_LIST))/len(LANGUAGE_LIST)
-        self.lang_to_idx = {}
-        for language in LANGUAGE_LIST:
-            self.lang_to_idx[language] = len(self.lang_to_idx)
+        self.lang_to_idx = self.user.lang_to_idx
         self.language_learning_rate = language_learning_rate
         self.language_sensibility = language_sensibility
 
@@ -159,3 +157,9 @@ class ApproximateUser:
         return self.language_sensibility * self.languages[
             self.lang_to_idx[language]
         ] + self.interest_sensibility * self.get_interest_score(book)
+
+    def language_similarity(self):
+        return 1-spatial.distance.cosine(self.languages, self.user.language)
+
+    def interest_similarity(self):
+        return 1-spatial.distance.cosine(self.interests, self.user.interests)
